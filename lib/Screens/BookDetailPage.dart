@@ -1,13 +1,19 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:testtem/Providers/BookProvider.dart';
+
 import 'package:testtem/DTO/BookDetail.dart';
-import 'dart:convert';
+import 'package:testtem/Providers/BookProvider.dart';
 
 class BookDetailPage extends StatefulWidget {
   final int bookId;
 
-  BookDetailPage({required this.bookId});
+  BookDetailPage({
+    Key? key,
+    required this.bookId,
+  }) : super(key: key);
 
   @override
   _BookDetailPageState createState() => _BookDetailPageState();
