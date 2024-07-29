@@ -2,6 +2,11 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:testtem/Screens/BookDetailPage.dart';
 import 'package:testtem/Screens/HomePage.dart';
+import 'package:testtem/Screens/my_book_page.dart';
+import 'package:testtem/Screens/store_page.dart';
+import 'package:testtem/features/presentation/pages/auth/authenticate/login_page.dart';
+import 'package:testtem/features/presentation/pages/auth/forgot_password/forgot_password_page.dart';
+import 'package:testtem/features/presentation/pages/auth/register_password/register_page.dart';
 import 'package:testtem/main_wrapper.dart';
 
 class RouterProvider {
@@ -9,10 +14,10 @@ class RouterProvider {
   static final _rootNavigationKey = GlobalKey<NavigatorState>();
   static final _rootNavigationHome =
       GlobalKey<NavigatorState>(debugLabel: "shellHome");
-  static final _rootNavigationWishlist =
-      GlobalKey<NavigatorState>(debugLabel: "shellWishlist");
-  static final _rootNavigationAccount =
-      GlobalKey<NavigatorState>(debugLabel: "shellAccount");
+  static final _rootNavigationStore =
+      GlobalKey<NavigatorState>(debugLabel: "shellStore");
+  static final _rootNavigationMybook =
+      GlobalKey<NavigatorState>(debugLabel: "shellMyBook");
   static final _rootNavigationAuth =
       GlobalKey<NavigatorState>(debugLabel: "shellAuth");
   static String initR = "/home";
@@ -37,8 +42,60 @@ class RouterProvider {
                 },
               )
             ]),
+            StatefulShellBranch(navigatorKey: _rootNavigationStore, routes: [
+              GoRoute(
+                path: "/product",
+                name: "product",
+                builder: (context, state) {
+                  return StorePage(
+                    key: state.pageKey,
+                  );
+                },
+              )
+            ]),
+            StatefulShellBranch(navigatorKey: _rootNavigationMybook, routes: [
+              GoRoute(
+                path: "/myBook",
+                name: "myBook",
+                builder: (context, state) {
+                  return MyBookPage(
+                    key: state.pageKey,
+                  );
+                },
+              )
+            ]),
+            // StatefulShellBranch(
+            //     initialLocation: "/login",
+            //     navigatorKey: _rootNavigationAuth,
+            //     routes: []),
           ],
         ),
+        GoRoute(
+            path: "/login",
+            name: "login",
+            builder: (context, state) {
+              return LoginPage(
+                key: state.pageKey,
+              );
+            },
+            routes: [
+              GoRoute(
+                  path: "register",
+                  name: "register",
+                  builder: (context, state) {
+                    return RegisterPage(
+                      key: state.pageKey,
+                    );
+                  }),
+              GoRoute(
+                  path: "forgot-password",
+                  name: "forgotPassword",
+                  builder: (context, state) {
+                    return ForgotPasswordPage(
+                      key: state.pageKey,
+                    );
+                  }),
+            ]),
         GoRoute(
           path: "/bookDetail",
           name: "bookDetail",

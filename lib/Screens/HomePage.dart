@@ -31,38 +31,38 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {
-                // Handle notification button press
-              },
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    prefixIcon: Icon(Icons.search),
-                  ),
-                ),
-              ),
-            ),
-            IconButton(
-              icon: Icon(Icons.person),
-              onPressed: () {
-                _showUserMenu(context);
-              },
-            ),
-          ],
-        ),
-      ),
+      // appBar: AppBar(
+      //   title: Row(
+      //     children: [
+      //       IconButton(
+      //         icon: Icon(Icons.notifications),
+      //         onPressed: () {
+      //           // Handle notification button press
+      //         },
+      //       ),
+      //       Expanded(
+      //         child: Padding(
+      //           padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      //           child: TextField(
+      //             decoration: InputDecoration(
+      //               hintText: 'Search...',
+      //               border: OutlineInputBorder(
+      //                 borderRadius: BorderRadius.circular(20.0),
+      //               ),
+      //               prefixIcon: Icon(Icons.search),
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //       IconButton(
+      //         icon: Icon(Icons.person),
+      //         onPressed: () {
+      //           _showUserMenu(context);
+      //         },
+      //       ),
+      //     ],
+      //   ),
+      // ),
       body: SingleChildScrollView(
         child: Column(
           children: [

@@ -9,10 +9,13 @@ import 'package:testtem/DTO/TopLike.dart';
 import 'package:http/http.dart' as http;
 
 class BookProvider with ChangeNotifier {
-  final String apiUrllike = "http://172.16.2.51:9090/api/v1/statistics/toplike";
-  final String apiUrlbuy = "http://172.16.2.51:9090/api/v1/statistics/topbuy";
-   final String apiUrlnew = "http://172.16.2.51:9090/api/v1/statistics/top4";
-   final String apiUrlBookDetail = "http://172.16.2.51:9090/api/v1/book/showone";
+  final String apiUrllike =
+      "http://192.168.37.169:9090/api/v1/statistics/toplike";
+  final String apiUrlbuy =
+      "http://192.168.37.169:9090/api/v1/statistics/topbuy";
+  final String apiUrlnew = "http://192.168.37.169:9090/api/v1/statistics/top4";
+  final String apiUrlBookDetail =
+      "http://192.168.37.169:9090/api/v1/book/showone";
 
   List<TopLike> _books = [];
   List<TopLike> get books => _books;
@@ -20,7 +23,7 @@ class BookProvider with ChangeNotifier {
   List<TopBuy> _Bbooks = [];
   List<TopBuy> get Bbooks => _Bbooks;
 
-   List<NewRelease> _Nbooks = [];
+  List<NewRelease> _Nbooks = [];
   List<NewRelease> get Nbooks => _Nbooks;
 
   BookDetail? _bookDetail;
@@ -31,11 +34,11 @@ class BookProvider with ChangeNotifier {
       final response = await http.get(Uri.parse(apiUrllike));
       if (response.statusCode == HttpStatus.ok) {
         final List<dynamic> extractData = json.decode(response.body);
-    
+
         _books = extractData
             .map((data) => TopLike.fromJson(data as Map<String, dynamic>))
             .toList();
-     
+
         notifyListeners();
       } else {
         print('Failed to load data: ${response.statusCode}');
@@ -74,7 +77,7 @@ class BookProvider with ChangeNotifier {
         _Nbooks = extractData
             .map((data) => NewRelease.fromJson(data as Map<String, dynamic>))
             .toList();
-      print('NBooks: $_Nbooks'); // Log parsed books
+        print('NBooks: $_Nbooks'); // Log parsed books
         notifyListeners();
       } else {
         print('Failed to load data: ${response.statusCode}');
@@ -97,5 +100,4 @@ class BookProvider with ChangeNotifier {
       throw Exception("Failed to load book detail");
     }
   }
- 
 }
