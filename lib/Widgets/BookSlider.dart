@@ -25,7 +25,7 @@ class BookSlider extends StatelessWidget {
             height: 200,
             enlargeCenterPage: true,
             autoPlay: true,
-            aspectRatio: 8/4,
+            aspectRatio: 8 / 4,
             autoPlayCurve: Curves.fastOutSlowIn,
             enableInfiniteScroll: true,
             autoPlayAnimationDuration: Duration(milliseconds: 800),

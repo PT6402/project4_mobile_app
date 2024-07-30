@@ -53,6 +53,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
       if (result is DataSuccess) {
         var dataUser = await user();
+        logger.i(dataUser.data);
         if (dataUser is DataFail) {
           throw Exception(result.message);
         } else {
@@ -98,7 +99,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         throw Exception(result.message);
       }
       if (result is DataSuccess) {
-        Navigator.of(registerUser.context!).pushNamed("login");
+        registerUser.context!.pushNamed("login");
       }
     } on Exception catch (e) {
       logger.e(e.toString());

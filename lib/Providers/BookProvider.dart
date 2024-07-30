@@ -10,12 +10,11 @@ import 'package:http/http.dart' as http;
 
 class BookProvider with ChangeNotifier {
   final String apiUrllike =
-      "http://192.168.37.169:9090/api/v1/statistics/toplike";
-  final String apiUrlbuy =
-      "http://192.168.37.169:9090/api/v1/statistics/topbuy";
-  final String apiUrlnew = "http://192.168.37.169:9090/api/v1/statistics/top4";
+      "http://192.168.1.14:9090/api/v1/statistics/toplike";
+  final String apiUrlbuy = "http://192.168.1.14:9090/api/v1/statistics/topbuy";
+  final String apiUrlnew = "http://192.168.1.14:9090/api/v1/statistics/top4";
   final String apiUrlBookDetail =
-      "http://192.168.37.169:9090/api/v1/book/showone";
+      "http://192.168.1.14:9090/api/v1/book/showone";
 
   List<TopLike> _books = [];
   List<TopLike> get books => _books;

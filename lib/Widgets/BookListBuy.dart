@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:testtem/DTO/TopBuy.dart';
 import 'package:testtem/Screens/BookDetailPage.dart';
 
@@ -28,15 +29,18 @@ class BookListBuy extends StatelessWidget {
             itemCount: books.length,
             itemBuilder: (context, index) {
               final book = books[index];
-              final bookName = book.name ?? 'Unknown'; // Cung cấp giá trị mặc định nếu book.name là null
-              final bookBuy = book.boughtBooks.toString(); // Chuyển đổi boughtBooks thành chuỗi
+              final bookName = book.name ??
+                  'Unknown'; // Cung cấp giá trị mặc định nếu book.name là null
+              final bookBuy = book.boughtBooks
+                  .toString(); // Chuyển đổi boughtBooks thành chuỗi
 
               return GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => BookDetailPage(bookId: book.id!)),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => BookDetailPage(bookId: book.id!)),
+                  // );
+                  context.push("/bookDetail/${book.id!}");
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -65,7 +69,8 @@ class BookListBuy extends StatelessWidget {
                               color: Colors.black.withOpacity(0.5),
                               child: Row(
                                 children: [
-                                  Icon(Icons.shopping_bag_outlined, color: Colors.red),
+                                  Icon(Icons.shopping_bag_outlined,
+                                      color: Colors.red),
                                   Text(
                                     bookBuy,
                                     style: TextStyle(color: Colors.white),

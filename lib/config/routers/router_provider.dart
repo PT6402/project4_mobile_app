@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:testtem/Screens/BookDetailPage.dart';
@@ -97,12 +99,12 @@ class RouterProvider {
                   }),
             ]),
         GoRoute(
-          path: "/bookDetail",
+          path: "/bookDetail/:bookId",
           name: "bookDetail",
           builder: (context, state) {
+            final bookId = state.pathParameters["bookId"]!;
             return BookDetailPage(
-                key: state.pageKey,
-                bookId: ModalRoute.of(context)!.settings.arguments as int);
+                key: state.pageKey, bookId: int.parse(bookId));
           },
         )
       ]);

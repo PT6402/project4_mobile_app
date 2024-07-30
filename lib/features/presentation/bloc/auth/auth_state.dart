@@ -6,6 +6,7 @@ class AuthState {
   final UserEntity? user;
   final bool? isLoading;
   final String? isError;
+
   const AuthState({
     this.isLoading,
     this.isError,

@@ -1,8 +1,7 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:testtem/features/presentation/bloc/auth/auth_bloc.dart';
-import 'package:testtem/features/presentation/bloc/auth/auth_state.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:testtem/features/presentation/bloc/auth/auth_bloc.dart';
+// import 'package:testtem/features/presentation/bloc/auth/auth_state.dart';
 import 'package:testtem/features/presentation/pages/auth/reset_password/widgets/background_reset.dart';
 
 class ResetPasswordPage extends StatelessWidget {
@@ -21,14 +20,15 @@ class ResetPasswordPage extends StatelessWidget {
         child: SingleChildScrollView(
       child: Center(
         child: Container(
-            width: size.width,
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            child: BlocBuilder<AuthBloc, AuthState>(
-              builder: (_, state) {
-                if(state is )
-              }
-            )),
+          width: size.width,
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          // child: BlocBuilder<AuthBloc, AuthState>(
+          //   builder: (_, state) {
+          //     if(state is )
+          //   }
+          // )
+        ),
       ),
     ));
   }
