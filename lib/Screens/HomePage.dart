@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
             Consumer<BookProvider>(
               builder: (context, bookProvider, child) {
                 return BookSlider(
-                    title: 'New Release', books: bookProvider.Nbooks);
+                    title: 'New Release', books: bookProvider.nBooks);
               },
             ),
             Consumer<BookProvider>(
@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
             Consumer<BookProvider>(
               builder: (context, bookProvider, child) {
                 return BookListBuy(
-                    title: 'Most Purchased Books', books: bookProvider.Bbooks);
+                    title: 'Most Purchased Books', books: bookProvider.bBooks);
               },
             ),
           ],
