@@ -48,7 +48,7 @@ class RouterProvider {
                 name: "product",
                 builder: (context, state) {
                   return StorePage(
-                    key: state.pageKey,
+                    // key: state.pageKey,
                   );
                 },
               )
@@ -97,12 +97,13 @@ class RouterProvider {
                   }),
             ]),
         GoRoute(
-          path: "/bookDetail",
+          path: "/bookDetail/:bookId",
           name: "bookDetail",
           builder: (context, state) {
+            final bookId=state.pathParameters["bookId"]!;
             return BookDetailPage(
                 key: state.pageKey,
-                bookId: ModalRoute.of(context)!.settings.arguments as int);
+                bookId: int.parse(bookId));
           },
         )
       ]);

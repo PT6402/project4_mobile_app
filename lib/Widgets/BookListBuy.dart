@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:testtem/DTO/TopBuy.dart';
 import 'package:testtem/Screens/BookDetailPage.dart';
 
@@ -33,10 +34,11 @@ class BookListBuy extends StatelessWidget {
 
               return GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => BookDetailPage(bookId: book.id!)),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => BookDetailPage(bookId: book.id!)),
+                  // );
+                  context.push("/bookDetail/${book.id}");
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

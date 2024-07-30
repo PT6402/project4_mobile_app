@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:testtem/DTO/TopLike.dart';
 import 'package:testtem/Screens/BookDetailPage.dart';
 
@@ -31,10 +32,11 @@ class BookListLike extends StatelessWidget {
               final booklike = book.likeQty.toString(); 
                 return GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => BookDetailPage(bookId: book.id!)),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => BookDetailPage(bookId: book.id!)),
+                  // );
+                    context.push("/bookDetail/${book.id}");
                 },
               child:  Padding(
                 padding: const EdgeInsets.all(8.0),

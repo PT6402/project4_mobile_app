@@ -20,15 +20,15 @@ class ResetPasswordPage extends StatelessWidget {
     return BackgroundReset(
         child: SingleChildScrollView(
       child: Center(
-        child: Container(
-            width: size.width,
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            child: BlocBuilder<AuthBloc, AuthState>(
-              builder: (_, state) {
-                if(state is )
-              }
-            )),
+        // child: Container(
+        //     width: size.width,
+        //     margin: const EdgeInsets.symmetric(vertical: 10),
+        //     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        //     child: BlocBuilder<AuthBloc, AuthState>(
+        //       builder: (_, state) {
+        //         if(state is )
+        //       }
+        //     )),
       ),
     ));
   }

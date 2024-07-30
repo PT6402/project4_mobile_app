@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:testtem/DTO/NewRelease.dart';
+import 'package:go_router/go_router.dart'; // Make sure to import GoRouter
 
 class BookSlider extends StatelessWidget {
   final String title;
@@ -34,37 +35,42 @@ class BookSlider extends StatelessWidget {
           items: books.map((book) {
             return Builder(
               builder: (BuildContext context) {
-                return Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                  decoration: BoxDecoration(
-                    color: Colors.amber,
-                    borderRadius: BorderRadius.circular(10),
-                    image: DecorationImage(
-                      image: MemoryImage(book.image),
-                      fit: BoxFit.cover,
+                return GestureDetector(
+                  onTap: () {
+                    context.push("/bookDetail/${book.id}");
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    margin: EdgeInsets.symmetric(horizontal: 5.0),
+                    decoration: BoxDecoration(
+                      color: Colors.amber,
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(
+                        image: MemoryImage(book.image),
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          color: Colors.blueGrey.withOpacity(0.5),
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            book.name ?? 'Unknown',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                    child: Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            color: Colors.blueGrey.withOpacity(0.5),
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              book.name ?? 'Unknown',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },
