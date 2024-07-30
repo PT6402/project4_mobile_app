@@ -36,7 +36,9 @@ class BookListLike extends StatelessWidget {
                   //   context,
                   //   MaterialPageRoute(builder: (context) => BookDetailPage(bookId: book.id!)),
                   // );
-                  context.push("/bookDetail/${book.id!}");
+
+                    context.push("/bookDetail/${book.id}");
+
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

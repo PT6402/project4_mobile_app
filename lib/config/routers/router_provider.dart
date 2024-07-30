@@ -56,7 +56,7 @@ class RouterProvider {
                 name: "product",
                 builder: (context, state) {
                   return StorePage(
-                    key: state.pageKey,
+                    // key: state.pageKey,
                   );
                 },
               )

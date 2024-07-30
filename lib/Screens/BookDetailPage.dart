@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -58,7 +57,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                             textAlign: TextAlign.center,
                           ),
                           Text(
-                            'by ${bookDetail.author}',
+                            'by ${bookDetail.authorlist.map((author) => author.name).join(', ')}',
                             style: TextStyle(fontSize: 18),
                             textAlign: TextAlign.center,
                           ),
@@ -69,6 +68,12 @@ class _BookDetailPageState extends State<BookDetailPage> {
                           ),
                           Text(
                             'Price: \$${bookDetail.price}',
+                            style: TextStyle(fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+SizedBox(height: 10),
+                          Text(
+                            'Categories: ${bookDetail.catelist.map((category) => category.name).join(', ')}',
                             style: TextStyle(fontSize: 16),
                             textAlign: TextAlign.center,
                           ),
@@ -100,37 +105,37 @@ class _BookDetailPageState extends State<BookDetailPage> {
                               ),
                               ...bookDetail.reviewList
                                   .map((review) => Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  '${review.username}',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                SizedBox(width: 10),
-                                                Row(
-                                                  children:
-                                                      List.generate(5, (index) {
-                                                    return Icon(
-                                                      index < review.rating
-                                                          ? Icons.star
-                                                          : Icons.star_border,
-                                                    );
-                                                  }),
-                                                ),
-                                              ],
-                                            ),
-                                            Text(review.content),
-                                          ],
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8.0),
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          '${review.username}',
+                                          style: TextStyle(
+                                              fontWeight:
+                                              FontWeight.bold),
                                         ),
-                                      ))
+                                        SizedBox(width: 10),
+                                        Row(
+                                          children:
+                                          List.generate(5, (index) {
+                                            return Icon(
+                                              index < review.rating
+                                                  ? Icons.star
+: Icons.star_border,
+                                            );
+                                          }),
+                                        ),
+                                      ],
+                                    ),
+                                    Text(review.content),
+                                  ],
+                                ),
+                              ))
                                   .toList(),
                               SizedBox(height: 20),
                               Text(
