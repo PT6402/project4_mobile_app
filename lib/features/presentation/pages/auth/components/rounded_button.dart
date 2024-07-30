@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class RoudedButton extends StatelessWidget {
-  final String text;
+  final String? text;
   final dynamic press;
   final Color? color, textColor;
   const RoudedButton(
       {super.key,
-      required this.text,
+      this.text,
       required this.press,
-      this.color,
+      this.color = Colors.blueGrey,
       this.textColor});
 
   @override
@@ -21,11 +21,15 @@ class RoudedButton extends StatelessWidget {
         child: MaterialButton(
           onPressed: press,
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-          color: Colors.blueGrey,
-          child: Text(
-            text,
-            style: TextStyle(color: textColor),
-          ),
+          color: color,
+          child: text != null
+              ? Text(
+                  text!,
+                  style: TextStyle(color: textColor),
+                )
+              : const Center(
+                  child: CircularProgressIndicator(),
+                ),
         ),
       ),
     );

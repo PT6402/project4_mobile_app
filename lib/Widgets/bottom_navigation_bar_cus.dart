@@ -15,6 +15,7 @@ class BottomNavigationBarCus extends StatelessWidget {
       // color: AppColor.gray50.withOpacity(0.2),
       notchMargin: 10,
       elevation: 0,
+      height: 68,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 35),
         child: Row(
@@ -26,6 +27,8 @@ class BottomNavigationBarCus extends StatelessWidget {
                 icon: IconlyLight.discovery, page: 1, label: "Store"),
             _bottomAppBarItem(context,
                 icon: IconlyLight.bookmark, page: 2, label: "My book"),
+            _bottomAppBarItem(context,
+                icon: IconlyLight.bag, page: 3, label: "Cart"),
           ],
         ),
       ),

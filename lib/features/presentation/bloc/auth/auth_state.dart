@@ -6,11 +6,14 @@ class AuthState {
   final UserEntity? user;
   final bool? isLoading;
   final String? isError;
+  final String? code;
+
   const AuthState({
     this.isLoading,
     this.isError,
     this.user,
     this.email,
+    this.code,
   });
 
   AuthState set({
@@ -18,13 +21,14 @@ class AuthState {
     UserEntity? user,
     bool? isLoading,
     String? isError,
+    String? code,
   }) {
     return AuthState(
-      email: email ?? this.email,
-      user: user ?? this.user,
-      isLoading: isLoading ?? this.isLoading,
-      isError: isError ?? this.isError,
-    );
+        email: email ?? this.email,
+        user: user ?? this.user,
+        isLoading: isLoading ?? this.isLoading,
+        isError: isError ?? this.isError,
+        code: code ?? this.code);
   }
 }
 

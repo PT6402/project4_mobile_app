@@ -13,7 +13,8 @@ class FieldCodeReset extends StatelessWidget {
       height: 68,
       width: size.width / 5.5,
       decoration: BoxDecoration(
-          color: Colors.blueGrey, borderRadius: BorderRadius.circular(15)),
+          color: Colors.grey.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(15)),
       child: Center(
         child: TextFormField(
           controller: controller,

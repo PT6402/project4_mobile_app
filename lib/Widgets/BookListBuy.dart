@@ -29,8 +29,10 @@ class BookListBuy extends StatelessWidget {
             itemCount: books.length,
             itemBuilder: (context, index) {
               final book = books[index];
-              final bookName = book.name ?? 'Unknown'; // Cung cấp giá trị mặc định nếu book.name là null
-              final bookBuy = book.boughtBooks.toString(); // Chuyển đổi boughtBooks thành chuỗi
+              final bookName = book.name ??
+                  'Unknown'; // Cung cấp giá trị mặc định nếu book.name là null
+              final bookBuy = book.boughtBooks
+                  .toString(); // Chuyển đổi boughtBooks thành chuỗi
 
               return GestureDetector(
                 onTap: () {
@@ -67,7 +69,8 @@ class BookListBuy extends StatelessWidget {
                               color: Colors.black.withOpacity(0.5),
                               child: Row(
                                 children: [
-                                  Icon(Icons.shopping_bag_outlined, color: Colors.red),
+                                  Icon(Icons.shopping_bag_outlined,
+                                      color: Colors.red),
                                   Text(
                                     bookBuy,
                                     style: TextStyle(color: Colors.white),

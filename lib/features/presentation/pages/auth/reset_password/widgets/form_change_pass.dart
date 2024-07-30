@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:testtem/features/presentation/bloc/auth/auth_bloc.dart';
+import 'package:testtem/features/presentation/bloc/auth/auth_event.dart';
 import 'package:testtem/features/presentation/pages/auth/components/rounded_button.dart';
 import 'package:testtem/features/presentation/pages/auth/components/rounded_password_field.dart';
 
@@ -13,7 +16,9 @@ class FormChangePass extends StatelessWidget {
     onSubmit() {
       if (keyForm.currentState!.validate()) {
         final value = txtNewpassword.text;
-        print(value);
+        final code = BlocProvider.of<AuthBloc>(context).state.code!;
+        BlocProvider.of<AuthBloc>(context)
+            .add(ResetPasswordUser((code: code, newPassword: value), context));
       }
     }
 

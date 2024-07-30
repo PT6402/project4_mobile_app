@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:testtem/features/presentation/bloc/auth/auth_bloc.dart';
+import 'package:testtem/features/presentation/bloc/auth/auth_event.dart';
 import 'package:testtem/features/presentation/pages/auth/components/rounded_button.dart';
 import 'package:testtem/features/presentation/pages/auth/reset_password/widgets/field_code_reset.dart';
 
@@ -25,7 +28,8 @@ class _FormOtpState extends State<FormOtp> {
           txtP3.text.isNotEmpty &&
           txtP4.text.isNotEmpty) {
         String value = "${txtP1.text}${txtP2.text}${txtP3.text}${txtP4.text}";
-        print(value);
+        BlocProvider.of<AuthBloc>(context)
+            .add(CheckCodeResetUser(value, context));
         txtP1.clear();
         txtP2.clear();
         txtP3.clear();

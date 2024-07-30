@@ -28,10 +28,16 @@ class _MainWrapperState extends State<MainWrapper> {
   }
 
   _onTapNav(index, BuildContext context) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    _goToBrach(_selectedIndex, context);
+    var state = BlocProvider.of<AuthBloc>(context).state;
+
+    if (state.user != null || index == 0 || index == 1) {
+      setState(() {
+        _selectedIndex = index;
+      });
+      _goToBrach(_selectedIndex, context);
+    } else {
+      context.pushNamed("login");
+    }
   }
 
   _buildBody() {
@@ -56,7 +62,7 @@ class _MainWrapperState extends State<MainWrapper> {
             listener: (context, state) {
               if (state is LoggedInState || state is GuestUserState) {
                 _selectedIndex = 0;
-                context.replaceNamed("home");
+                context.goNamed("home");
               }
             },
           )

@@ -89,7 +89,7 @@ class AuthRepoImpl implements AuthRepo {
       String name, String email, String password) async {
     try {
       final result = await _authApiService
-          .register(RegisterReq(email: email, password: password));
+          .register(RegisterReq(email: email, password: password, name: name));
       if (result.response.statusCode == HttpStatus.ok) {
         return DataSuccess(null, result.data.message);
       } else {

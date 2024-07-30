@@ -29,6 +29,7 @@ class FormRegister extends StatelessWidget {
           email: txtEmail.text,
           password: txtPassword.text,
         );
+        print(txtName.text);
         BlocProvider.of<AuthBloc>(context).add(RegisterUser(value, context));
       }
     }

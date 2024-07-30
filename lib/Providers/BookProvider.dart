@@ -9,6 +9,7 @@ import 'package:testtem/DTO/NewRelease.dart';
 import 'package:testtem/DTO/BookDetail.dart';
 
 class BookProvider with ChangeNotifier {
+
   final String apiUrlLike =
       "http://192.168.1.9:9090/api/v1/statistics/toplike";
   final String apiUrlBuy = "http://192.168.1.9:9090/api/v1/statistics/topbuy";
