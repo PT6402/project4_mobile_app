@@ -56,7 +56,7 @@ class _MainWrapperState extends State<MainWrapper> {
             listener: (context, state) {
               if (state is LoggedInState || state is GuestUserState) {
                 _selectedIndex = 0;
-                context.replaceNamed("home");
+                context.goNamed("home");
               }
             },
           )

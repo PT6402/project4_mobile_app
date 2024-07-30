@@ -21,7 +21,8 @@ class InforCard extends StatelessWidget {
       ),
       title: Text(
         name,
-        style: const TextStyle(color: Colors.white),
+        style:
+            const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
       subtitle: Text(email, style: const TextStyle(color: Colors.white)),
     );

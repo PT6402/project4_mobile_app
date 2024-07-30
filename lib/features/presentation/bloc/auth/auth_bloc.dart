@@ -99,7 +99,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         throw Exception(result.message);
       }
       if (result is DataSuccess) {
-        registerUser.context!.pushNamed("login");
+        registerUser.context!.pop();
       }
     } on Exception catch (e) {
       logger.e(e.toString());
@@ -111,30 +111,46 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void onCheckCodeReset(
       CheckCodeResetUser checkCodeResetUser, Emitter<AuthState> emit) async {
-    var result = await checkCodeReset(params: checkCodeResetUser.params);
-    if (result is DataFail) {
-      print(result.message);
-      emit(const CheckCodeFail());
-    }
-    if (result is DataSuccess) {
-      print(result.message);
-      emit(const CheckCodeSuccess());
+    emit(state.set(isLoading: true, isError: null));
+    try {
+      var result = await checkCodeReset(params: checkCodeResetUser.params);
+      if (result is DataFail) {
+        print(result.message);
+        emit(const CheckCodeFail());
+      }
+      if (result is DataSuccess) {
+        emit(state.set(code: checkCodeResetUser.params));
+        print("ok");
+        checkCodeResetUser.context!.pop();
+        checkCodeResetUser.context!
+            .pushNamed('resetPassword', pathParameters: {"isCode": "false"});
+      }
+    } on Exception catch (e) {
+      logger.e(e.toString());
+      emit(state.set(isError: e.toString()));
+    } finally {
+      emit(state.set(isLoading: false));
     }
   }
 
   void onForgotPassword(
       ForgotPasswordUser forgotPasswordUser, Emitter<AuthState> emit) async {
+    emit(state.set(isLoading: true, isError: null));
     try {
       var result = await forgot(params: forgotPasswordUser.params);
       if (result is DataFail) {
         print(result.message);
       }
       if (result is DataSuccess) {
-        forgotPasswordUser.context!.goNamed("codeReset");
+        forgotPasswordUser.context!
+            .pushNamed('resetPassword', pathParameters: {"isCode": "true"});
         print(result.message);
       }
     } on Exception catch (e) {
       logger.e(e);
+      emit(state.set(isError: e.toString()));
+    } finally {
+      emit(state.set(isLoading: false));
     }
   }
 
@@ -145,7 +161,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       print(result.message);
     }
     if (result is DataSuccess) {
-      resetPasswordUser.context!.goNamed("login");
+      resetPasswordUser.context!.pop();
+      resetPasswordUser.context!.pop();
       print(result.message);
     }
   }

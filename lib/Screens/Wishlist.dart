@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:testtem/Widgets/WishlistItem.dart';
 
-
 class WishlistScreen extends StatelessWidget {
-  WishlistScreen();
+  WishlistScreen({super.key});
   final List<Book> wishlistBooks = [
     Book('Book 1', 'assets/book1.jpg'),
     Book('Book 2', 'assets/book2.jpg'),
