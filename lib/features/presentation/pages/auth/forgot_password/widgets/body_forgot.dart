@@ -58,8 +58,8 @@ class BodyForgot extends StatelessWidget {
               text: state.isLoading != null
                   ? state.isLoading!
                       ? null
-                      : "text"
-                  : "text",
+                      : "Send"
+                  : "Send",
               press: onSubmit,
               textColor: Colors.white,
             ),

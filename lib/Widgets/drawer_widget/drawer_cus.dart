@@ -26,7 +26,7 @@ class _DrawerCusState extends State<DrawerCus> {
           margin: const EdgeInsets.only(bottom: 20, left: 5),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: Colors.blueGrey[400]?.withOpacity(0.8),
+            color: Colors.white.withOpacity(0.9),
           ),
           width: 288,
           child: state.user != null

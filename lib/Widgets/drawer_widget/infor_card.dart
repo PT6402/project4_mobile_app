@@ -16,15 +16,15 @@ class InforCard extends StatelessWidget {
       leading: const CircleAvatar(
         child: Icon(
           IconlyLight.profile,
-          color: Colors.white,
+          color: Colors.black,
         ),
       ),
       title: Text(
         name,
         style:
-            const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       ),
-      subtitle: Text(email, style: const TextStyle(color: Colors.white)),
+      subtitle: Text(email, style: const TextStyle(color: Colors.black)),
     );
   }
 }

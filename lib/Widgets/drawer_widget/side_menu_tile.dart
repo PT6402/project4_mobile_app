@@ -20,7 +20,7 @@ class SideMenuTile extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.only(left: 24, right: 24),
           child: Divider(
-            color: Colors.white24,
+            color: Colors.black45,
             height: 1,
           ),
         ),
@@ -33,7 +33,7 @@ class SideMenuTile extends StatelessWidget {
               left: 0,
               child: Container(
                 decoration: const BoxDecoration(
-                    color: Colors.white54,
+                    color: Colors.black,
                     borderRadius: BorderRadius.all(Radius.circular(10))),
               ),
             ),
@@ -44,12 +44,12 @@ class SideMenuTile extends StatelessWidget {
                 width: 34,
                 child: Icon(
                   icon,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
               ),
               title: Text(
                 name,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black),
               ),
             ),
           ],

@@ -28,10 +28,16 @@ class _MainWrapperState extends State<MainWrapper> {
   }
 
   _onTapNav(index, BuildContext context) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    _goToBrach(_selectedIndex, context);
+    var state = BlocProvider.of<AuthBloc>(context).state;
+
+    if (state.user != null || index == 0 || index == 1) {
+      setState(() {
+        _selectedIndex = index;
+      });
+      _goToBrach(_selectedIndex, context);
+    } else {
+      context.pushNamed("login");
+    }
   }
 
   _buildBody() {
