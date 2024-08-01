@@ -31,104 +31,46 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Row(
-      //     children: [
-      //       IconButton(
-      //         icon: Icon(Icons.notifications),
-      //         onPressed: () {
-      //           // Handle notification button press
-      //         },
-      //       ),
-      //       Expanded(
-      //         child: Padding(
-      //           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      //           child: TextField(
-      //             decoration: InputDecoration(
-      //               hintText: 'Search...',
-      //               border: OutlineInputBorder(
-      //                 borderRadius: BorderRadius.circular(20.0),
-      //               ),
-      //               prefixIcon: Icon(Icons.search),
-      //             ),
-      //           ),
-      //         ),
-      //       ),
-      //       IconButton(
-      //         icon: Icon(Icons.person),
-      //         onPressed: () {
-      //           _showUserMenu(context);
-      //         },
-      //       ),
-      //     ],
-      //   ),
-      // ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Consumer<BookProvider>(
-              builder: (context, bookProvider, child) {
-                return BookSlider(
-                    title: 'New Release', books: bookProvider.nBooks);
-              },
-            ),
-            Consumer<BookProvider>(
-              builder: (context, bookProvider, child) {
-                return BookListLike(
-                    title: 'Most Liked Books', books: bookProvider.books);
-              },
-            ),
-            Consumer<BookProvider>(
-              builder: (context, bookProvider, child) {
-                return BookListBuy(
-                    title: 'Most Purchased Books', books: bookProvider.bBooks);
-              },
-            ),
-          ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Consumer<BookProvider>(
+                builder: (context, bookProvider, child) {
+                  return BookSlider(
+                      title: 'New Release', books: bookProvider.nBooks);
+                },
+              ),
+              Consumer<BookProvider>(
+                builder: (context, bookProvider, child) {
+                  return BookListLike(
+                      title: 'Most Liked Books', books: bookProvider.books);
+                },
+              ),
+              Consumer<BookProvider>(
+                builder: (context, bookProvider, child) {
+                  return BookListBuy(
+                      title: 'Most Purchased Books', books: bookProvider.bBooks);
+                },
+              ),
+            ],
+          ),
         ),
       ),
-      // bottomNavigationBar:
-
-      // BottomNavigationBar(
-      //   type: BottomNavigationBarType.fixed,
-      //   currentIndex: _currentIndex,
-      //   onTap: (index) {
-      //     setState(() {
-      //       _currentIndex = index;
-      //     });
-      //     if (index == 3) {
-      //       Navigator.pushNamed(context, '/wishlist');
-      //     } else if (index == 4) {
-      //       _showMoreMenu(context);
-      //     } else {
-      //       // Handle other navigation
-      //     }
-      //   },
-      //   selectedItemColor: Colors.black,
-      //   unselectedItemColor: Colors.black,
-      //   items: const [
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.home),
-      //       label: 'Home',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.book),
-      //       label: 'My Book',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.chrome_reader_mode),
-      //       label: 'Reading',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.favorite),
-      //       label: 'Wishlist',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.more_vert),
-      //       label: 'More',
-      //     ),
-      //   ],
-      // ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+          // Handle navigation
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'My Books'),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
+        ],
+      ),
     );
   }
 
@@ -161,53 +103,4 @@ class _HomePageState extends State<HomePage> {
       }
     });
   }
-
-  // void _showMoreMenu(BuildContext context) {
-  //   final RenderBox overlay =
-  //       Overlay.of(context).context.findRenderObject() as RenderBox;
-  //   showMenu(
-  //     context: context,
-  //     position: RelativeRect.fromRect(
-  //       Rect.fromLTRB(
-  //         overlay.size.width - 150,
-  //         overlay.size.height - 250,
-  //         0,
-  //         0,
-  //       ),
-  //       Offset.zero & overlay.size,
-  //     ),
-  //     items: const [
-  //       PopupMenuItem<String>(
-  //         value: 'cart',
-  //         child: ListTile(
-  //           leading: Icon(Icons.shopping_cart),
-  //           title: Text('Cart'),
-  //         ),
-  //       ),
-  //       PopupMenuItem<String>(
-  //         value: 'order',
-  //         child: ListTile(
-  //           leading: Icon(Icons.receipt),
-  //           title: Text('Order'),
-  //         ),
-  //       ),
-  //       PopupMenuItem<String>(
-  //         value: 'about_us',
-  //         child: ListTile(
-  //           leading: Icon(Icons.info),
-  //           title: Text('About Us'),
-  //         ),
-  //       ),
-  //     ],
-  //   ).then((value) {
-  //     // Handle menu item selection here
-  //     if (value == 'cart') {
-  //       // Navigate to cart
-  //     } else if (value == 'order') {
-  //       // Navigate to order
-  //     } else if (value == 'about_us') {
-  //       // Navigate to about us
-  //     }
-  //   });
-  // }
 }
