@@ -43,7 +43,7 @@ class BookSlider extends StatelessWidget {
                     width: MediaQuery.of(context).size.width,
                     margin: EdgeInsets.symmetric(horizontal: 5.0),
                     decoration: BoxDecoration(
-                      color: Colors.amber,
+                      color: Colors.grey.withOpacity(0.5),
                       borderRadius: BorderRadius.circular(10),
                       image: DecorationImage(
                         image: MemoryImage(book.image),
@@ -55,7 +55,7 @@ class BookSlider extends StatelessWidget {
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: Container(
-                            color: Colors.blueGrey.withOpacity(0.5),
+                            color: Colors.blueGrey.withOpacity(0.3),
                             width: double.infinity,
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
@@ -69,6 +69,13 @@ class BookSlider extends StatelessWidget {
                             ),
                           ),
                         ),
+                         Positioned(
+                          top: 5,
+                          right: 5,
+                          child: Icon(
+                            Icons.favorite_border_outlined,
+                            color: Colors.red,),
+                          ),
                       ],
                     ),
                   ),

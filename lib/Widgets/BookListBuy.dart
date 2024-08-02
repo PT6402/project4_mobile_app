@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:testtem/DTO/TopBuy.dart';
@@ -29,17 +30,11 @@ class BookListBuy extends StatelessWidget {
             itemCount: books.length,
             itemBuilder: (context, index) {
               final book = books[index];
-              final bookName = book.name ??
-                  'Unknown'; // Cung cấp giá trị mặc định nếu book.name là null
-              final bookBuy = book.boughtBooks
-                  .toString(); // Chuyển đổi boughtBooks thành chuỗi
+              final bookName = book.name ?? 'Unknown'; // Cung cấp giá trị mặc định nếu book.name là null
+              final bookBuy = book.boughtBooks.toString(); // Chuyển đổi boughtBooks thành chuỗi
 
               return GestureDetector(
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => BookDetailPage(bookId: book.id!)),
-                  // );
                   context.push("/bookDetail/${book.id}");
                 },
                 child: Padding(
@@ -54,7 +49,7 @@ class BookListBuy extends StatelessWidget {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(8.0),
                               child: Image.memory(
-                                book.image, // Đảm bảo chuyển đổi từ base64 sang byte
+                                book.image,
                                 fit: BoxFit.cover,
                                 width: 100,
                                 height: 150,
@@ -65,12 +60,11 @@ class BookListBuy extends StatelessWidget {
                             bottom: 0,
                             child: Container(
                               width: 100,
-                              padding: const EdgeInsets.all(4.0),
-                              color: Colors.black.withOpacity(0.5),
+                              padding: const EdgeInsets.all(8.0),
+                              color: Colors.grey.withOpacity(0.5),
                               child: Row(
                                 children: [
-                                  Icon(Icons.shopping_bag_outlined,
-                                      color: Colors.red),
+                                  Icon(Icons.shopping_bag_outlined, color: Colors.red),
                                   Text(
                                     bookBuy,
                                     style: TextStyle(color: Colors.white),
@@ -79,14 +73,21 @@ class BookListBuy extends StatelessWidget {
                               ),
                             ),
                           ),
+                          Positioned(
+                            top: 5,
+                            right: 5,
+                            child: Icon(Icons.favorite_border_outlined,color: Colors.red,))
                         ],
                       ),
                       SizedBox(height: 7),
-                      Text(
-                        bookName,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
+                      SizedBox(
+                        width: 100, // Đặt chiều rộng cho SizedBox
+                        child: Text(
+                          bookName,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       ),
                     ],
                   ),

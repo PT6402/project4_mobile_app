@@ -15,10 +15,10 @@ class BookListLike extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(5.0),
           child: Text(
             title,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
         Container(
@@ -32,11 +32,6 @@ class BookListLike extends StatelessWidget {
               final booklike = book.likeQty.toString();
               return GestureDetector(
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => BookDetailPage(bookId: book.id!)),
-                  // );
-
                     context.push("/bookDetail/${book.id}");
 
                 },
@@ -68,30 +63,40 @@ class BookListLike extends StatelessWidget {
                             bottom: 0,
                             child: Container(
                               width: 100,
-                              padding: const EdgeInsets.all(4.0),
-                              // color: Colors.orange.withOpacity(0.7), // Nền cam phía dưới
+                              padding: const EdgeInsets.all(8.0),
+                              color: Colors.grey.withOpacity(0.5), 
+                              // Nền cam phía dưới
                               child: Row(
                                 children: [
-                                  Icon(Icons.favorite_border_outlined,
+                                  Icon(Icons.person,
                                       color: Colors.red),
                                   Text(
                                     booklike,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.red),
+                                        color: Colors.white),
                                   ),
+                                  
                                 ],
                               ),
                             ),
                           ),
+                          Positioned(
+                            top: 5,
+                            right: 5,
+                            child: Icon(Icons.favorite_border_outlined,color: Colors.red,)),
                         ],
                       ),
                       SizedBox(height: 7),
+                      SizedBox(
+                        width: 100,
+                        child: 
                       Text(
                         bookName,
                         style: TextStyle(fontWeight: FontWeight.bold),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
+                      ),
                       ),
                     ],
                   ),
