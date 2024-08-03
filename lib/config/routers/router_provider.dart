@@ -6,9 +6,11 @@ import 'package:testtem/Screens/BookDetailPage.dart';
 import 'package:testtem/Screens/HomePage.dart';
 import 'package:testtem/Screens/Wishlist.dart';
 import 'package:testtem/Screens/about_us_page.dart';
+import 'package:testtem/Screens/author_page.dart';
 import 'package:testtem/Screens/cart_page.dart';
 import 'package:testtem/Screens/my_book_page.dart';
 import 'package:testtem/Screens/order_page.dart';
+import 'package:testtem/Screens/publisher_page.dart';
 import 'package:testtem/Screens/search_page.dart';
 import 'package:testtem/Screens/store_page.dart';
 import 'package:testtem/features/presentation/pages/auth/authenticate/login_page.dart';
@@ -131,6 +133,24 @@ class RouterProvider {
             final bookId = state.pathParameters["bookId"]!;
             return BookDetailPage(
                 key: state.pageKey, bookId: int.parse(bookId));
+          },
+        ),
+        GoRoute(
+          path: "/authorDetail/:authorId",
+          name: "authorDetail",
+          builder: (context, state) {
+            final authorId = state.pathParameters["authorId"]!;
+            return AuthorPage(
+                key: state.pageKey, authorId: int.parse(authorId));
+          },
+        ),
+        GoRoute(
+          path: "/publisherDetail/:pubId",
+          name: "publisherDetail",
+          builder: (context, state) {
+            final pubId = state.pathParameters["pubId"]!;
+            return PublisherPage(
+                key: state.pageKey, pubId: int.parse(pubId));
           },
         ),
         GoRoute(
