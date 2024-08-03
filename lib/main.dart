@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:testtem/Providers/BookProvider.dart';
+import 'package:testtem/Providers/WishlistProvider.dart';
 import 'package:testtem/config/routers/router_provider.dart';
 import 'package:testtem/features/injection_container.dart';
 import 'package:testtem/features/presentation/bloc/auth/auth_bloc.dart';
@@ -13,6 +14,7 @@ void main() async {
     MultiBlocProvider(providers: [
       BlocProvider(create: (context) => sl<AuthBloc>()),
       ChangeNotifierProvider(create: (_) => BookProvider()),
+      ChangeNotifierProvider(create: (_)=>WishListProvider(sl())),
     ], child: const MyApp()),
   );
 }

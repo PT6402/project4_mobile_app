@@ -1,16 +1,37 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:testtem/DTO/TopBuy.dart';
+import 'package:testtem/Providers/BookProvider.dart';
+import 'package:testtem/Providers/WishlistProvider.dart';
 import 'package:testtem/Screens/BookDetailPage.dart';
-
-class BookListBuy extends StatelessWidget {
+import 'package:testtem/features/presentation/bloc/auth/auth_bloc.dart';
+class BookListBuy extends StatefulWidget {
   final String title;
   final List<TopBuy> books;
+  const BookListBuy({super.key, required this.title, required this.books,});
 
-  BookListBuy({required this.title, required this.books});
+  @override
+  State<BookListBuy> createState() => _BookListBuyState();
+}
 
+class _BookListBuyState extends State<BookListBuy> {
+   bool _isInit = true;
+    @override
+  void didChangeDependencies() {
+    if (_isInit) {
+     
+      final wishlistprovider=Provider.of<WishListProvider>(context,listen: false);
+      wishlistprovider.getWishlist();
+     
+      
+      _isInit = false;
+    }
+    super.didChangeDependencies();
+  }
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -19,7 +40,7 @@ class BookListBuy extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            title,
+            widget.title,
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),
@@ -27,9 +48,9 @@ class BookListBuy extends StatelessWidget {
           height: 200,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: books.length,
+            itemCount: widget.books.length,
             itemBuilder: (context, index) {
-              final book = books[index];
+              final book = widget.books[index];
               final bookName = book.name ?? 'Unknown'; // Cung cấp giá trị mặc định nếu book.name là null
               final bookBuy = book.boughtBooks.toString(); // Chuyển đổi boughtBooks thành chuỗi
 
@@ -73,10 +94,49 @@ class BookListBuy extends StatelessWidget {
                               ),
                             ),
                           ),
+                    
                           Positioned(
                             top: 5,
                             right: 5,
-                            child: Icon(Icons.favorite_border_outlined,color: Colors.red,))
+                            child: Consumer<WishListProvider>(
+                              builder: (context, wishlistProvider, child) {
+                                var state = BlocProvider.of<AuthBloc>(context).state;
+                               
+                                return FutureBuilder<bool>(
+                                  future: state.user != null ? wishlistProvider.checkStatus(book.id!) : Future.value(false),
+                                  builder: (context, snapshot) {
+                                    bool isFavorite = snapshot.data ?? false;
+                                    return StatefulBuilder(
+                                      builder: (context, setState) {
+                                        return GestureDetector(
+                                          onTap: () async {
+                                            if (state.user == null) {
+                                              context.pushNamed("login");
+                                            } else {
+                                              if (isFavorite) {
+                                                await wishlistProvider.deleteWish(book.id!);
+                                              } else {
+                                                await wishlistProvider.addWish(book.id!);
+                                              }
+                                              // Cập nhật lại trạng thái yêu thích
+                                              bool newStatus = await wishlistProvider.checkStatus(book.id!);
+                                              setState(() {
+                                                isFavorite = newStatus;
+                                              });
+                                            }
+                                          },
+                                          child: Icon(
+                                            isFavorite ? Icons.favorite : Icons.favorite_border_outlined,
+                                            color: Colors.red,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ),
                         ],
                       ),
                       SizedBox(height: 7),

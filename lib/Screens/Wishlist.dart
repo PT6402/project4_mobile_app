@@ -1,16 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:testtem/Providers/WishlistProvider.dart';
 import 'package:testtem/Widgets/WishlistItem.dart';
 
-class WishlistScreen extends StatelessWidget {
+class WishlistScreen extends StatefulWidget {
   WishlistScreen({super.key});
-  final List<Book> wishlistBooks = [
-    Book('Book 1', 'assets/book1.jpg'),
-    Book('Book 2', 'assets/book2.jpg'),
-    // Thêm các sách yêu thích khác
-  ];
+
+  @override
+  State<WishlistScreen> createState() => _WishlistScreenState();
+}
+
+class _WishlistScreenState extends State<WishlistScreen> {
+
+    @override
+  void initState(){
+    super.initState();
+    final wishlistprovider=Provider.of<WishListProvider>(context,listen: false);
+    wishlistprovider.getWishlist();
+  }
+ 
+
+  
 
   @override
   Widget build(BuildContext context) {
+    final wishProvider = Provider.of<WishListProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Wishlist'),
@@ -18,38 +33,18 @@ class WishlistScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Icon(Icons.favorite, size: 80, color: Colors.red),
-                Text('Wishlist', style: TextStyle(fontSize: 24)),
-              ],
-            ),
-          ),
+          
           Expanded(
             child: ListView.builder(
-              itemCount: wishlistBooks.length,
+              itemCount: wishProvider.listshow.length,
               itemBuilder: (context, index) {
-                return WishlistItem(book: wishlistBooks[index]);
+                final book = wishProvider.listshow[index];
+                return WishlistItem(book: book);
               },
             ),
           ),
         ],
       ),
     );
-  }
-}
-
-class Book {
-  final String title;
-  final String image;
-
-  Book(this.title, this.image);
-  Map<String, dynamic> toMap() {
-    return {
-      'title': title,
-      'image': image,
-    };
   }
 }

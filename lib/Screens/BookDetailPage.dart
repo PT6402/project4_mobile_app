@@ -1,10 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:testtem/DTO/BookDetail.dart';
 import 'package:testtem/Providers/BookProvider.dart';
+import 'package:testtem/Providers/WishlistProvider.dart';
+import 'package:testtem/features/presentation/bloc/auth/auth_bloc.dart';
 
 class BookDetailPage extends StatefulWidget {
   final int bookId;
@@ -50,11 +54,74 @@ class _BookDetailPageState extends State<BookDetailPage> {
                           if (bookDetail.imageUrl.isNotEmpty)
                             Image.memory(base64Decode(bookDetail.imageUrl)),
                           SizedBox(height: 10),
-                          Text(
-                            bookDetail.name,
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                bookDetail.name,
+                                style: TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                              Positioned(
+                                top: 5,
+                                right: 5,
+                                child: Consumer<WishListProvider>(
+                                  builder: (context, wishlistProvider, child) {
+                                    var state =
+                                        BlocProvider.of<AuthBloc>(context)
+                                            .state;
+
+                                    return FutureBuilder<bool>(
+                                      future: state.user != null
+                                          ? wishlistProvider
+                                              .checkStatus(bookDetail.id!)
+                                          : Future.value(false),
+                                      builder: (context, snapshot) {
+                                        bool isFavorite =
+                                            snapshot.data ?? false;
+                                        return StatefulBuilder(
+                                          builder: (context, setState) {
+                                            return GestureDetector(
+                                              onTap: () async {
+                                                if (state.user == null) {
+                                                  context.pushNamed("login");
+                                                } else {
+                                                  if (isFavorite) {
+                                                    await wishlistProvider
+                                                        .deleteWish(
+                                                            bookDetail.id!);
+                                                  } else {
+                                                    await wishlistProvider
+                                                        .addWish(
+                                                            bookDetail.id!);
+                                                  }
+                                                  // Cập nhật lại trạng thái yêu thích
+                                                  bool newStatus =
+                                                      await wishlistProvider
+                                                          .checkStatus(
+                                                              bookDetail.id!);
+                                                  setState(() {
+                                                    isFavorite = newStatus;
+                                                  });
+                                                }
+                                              },
+                                              child: Icon(
+                                                isFavorite
+                                                    ? Icons.favorite
+                                                    : Icons
+                                                        .favorite_border_outlined,
+                                                color: Colors.red,
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                           Text(
                             'by ${bookDetail.authorlist.map((author) => author.name).join(', ')}',
@@ -71,7 +138,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                             style: TextStyle(fontSize: 16),
                             textAlign: TextAlign.center,
                           ),
-SizedBox(height: 10),
+                          SizedBox(height: 10),
                           Text(
                             'Categories: ${bookDetail.catelist.map((category) => category.name).join(', ')}',
                             style: TextStyle(fontSize: 16),
@@ -105,37 +172,37 @@ SizedBox(height: 10),
                               ),
                               ...bookDetail.reviewList
                                   .map((review) => Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 8.0),
-                                child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          '${review.username}',
-                                          style: TextStyle(
-                                              fontWeight:
-                                              FontWeight.bold),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  '${review.username}',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                SizedBox(width: 10),
+                                                Row(
+                                                  children:
+                                                      List.generate(5, (index) {
+                                                    return Icon(
+                                                      index < review.rating
+                                                          ? Icons.star
+                                                          : Icons.star_border,
+                                                    );
+                                                  }),
+                                                ),
+                                              ],
+                                            ),
+                                            Text(review.content),
+                                          ],
                                         ),
-                                        SizedBox(width: 10),
-                                        Row(
-                                          children:
-                                          List.generate(5, (index) {
-                                            return Icon(
-                                              index < review.rating
-                                                  ? Icons.star
-: Icons.star_border,
-                                            );
-                                          }),
-                                        ),
-                                      ],
-                                    ),
-                                    Text(review.content),
-                                  ],
-                                ),
-                              ))
+                                      ))
                                   .toList(),
                               SizedBox(height: 20),
                               Text(

@@ -1,7 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:testtem/DTO/NewRelease.dart';
-import 'package:go_router/go_router.dart'; // Make sure to import GoRouter
+import 'package:go_router/go_router.dart';
+import 'package:testtem/Providers/WishlistProvider.dart';
+import 'package:testtem/features/presentation/bloc/auth/auth_bloc.dart'; // Make sure to import GoRouter
 
 class BookSlider extends StatelessWidget {
   final String title;
@@ -70,12 +74,45 @@ class BookSlider extends StatelessWidget {
                           ),
                         ),
                          Positioned(
-                          top: 5,
-                          right: 5,
-                          child: Icon(
-                            Icons.favorite_border_outlined,
-                            color: Colors.red,),
-                          ),
+                             top: 5,
+                            right: 5,
+                            child: Consumer<WishListProvider>(
+                              builder: (context, wishlistProvider, child) {
+                                var state = BlocProvider.of<AuthBloc>(context).state;
+                                return FutureBuilder<bool>(
+                                  future: state.user != null ? wishlistProvider.checkStatus(book.id!) : Future.value(false),
+                                  builder: (context, snapshot) {
+                                    bool isFavorite = snapshot.data ?? false;
+                                    return StatefulBuilder(
+                                      builder: (context, setState) {
+                                        return GestureDetector(
+                                          onTap: () async {
+                                            if (state.user == null) {
+                                              context.pushNamed("login");
+                                            } else {
+                                              if (isFavorite) {
+                                                await wishlistProvider.deleteWish(book.id!);
+                                              } else {
+                                                await wishlistProvider.addWish(book.id!);
+                                              }
+                                              // Cập nhật lại trạng thái yêu thích
+                                              bool newStatus = await wishlistProvider.checkStatus(book.id!);
+                                              setState(() {
+                                                isFavorite = newStatus;
+                                              });
+                                            }
+                                          },
+                                          child: Icon(
+                                            isFavorite ? Icons.favorite : Icons.favorite_border_outlined,
+                                            color: Colors.red,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                            ),),
                       ],
                     ),
                   ),

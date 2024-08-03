@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:testtem/DTO/TopLike.dart';
-import 'package:testtem/Screens/BookDetailPage.dart';
+import 'package:testtem/Providers/WishlistProvider.dart';
+import 'package:testtem/features/presentation/bloc/auth/auth_bloc.dart';
 
 class BookListLike extends StatelessWidget {
   final String title;
@@ -30,10 +33,10 @@ class BookListLike extends StatelessWidget {
               final book = books[index];
               final bookName = book.name ?? 'Unknown';
               final booklike = book.likeQty.toString();
+
               return GestureDetector(
                 onTap: () {
-                    context.push("/bookDetail/${book.id}");
-
+                  context.push("/bookDetail/${book.id}");
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -54,29 +57,21 @@ class BookListLike extends StatelessWidget {
                               ),
                             ),
                           ),
-                          // Container(
-                          //   height: 150,
-                          //   width: 100,
-                          //   color: Colors.orange.withOpacity(0.3), // Màu cam với độ mờ
-                          // ),
                           Positioned(
                             bottom: 0,
                             child: Container(
                               width: 100,
                               padding: const EdgeInsets.all(8.0),
-                              color: Colors.grey.withOpacity(0.5), 
-                              // Nền cam phía dưới
+                              color: Colors.grey.withOpacity(0.5),
                               child: Row(
                                 children: [
-                                  Icon(Icons.person,
-                                      color: Colors.red),
+                                  Icon(Icons.person, color: Colors.red),
                                   Text(
                                     booklike,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white),
                                   ),
-                                  
                                 ],
                               ),
                             ),
@@ -84,19 +79,55 @@ class BookListLike extends StatelessWidget {
                           Positioned(
                             top: 5,
                             right: 5,
-                            child: Icon(Icons.favorite_border_outlined,color: Colors.red,)),
+                            child: Consumer<WishListProvider>(
+                              builder: (context, wishlistProvider, child) {
+                                var state = BlocProvider.of<AuthBloc>(context).state;
+                                return FutureBuilder<bool>(
+                                  future: state.user != null ? wishlistProvider.checkStatus(book.id!) : Future.value(false),
+                                  builder: (context, snapshot) {
+                                    bool isFavorite = snapshot.data ?? false;
+                                    return StatefulBuilder(
+                                      builder: (context, setState) {
+                                        return GestureDetector(
+                                          onTap: () async {
+                                            if (state.user == null) {
+                                              context.pushNamed("login");
+                                            } else {
+                                              if (isFavorite) {
+                                                await wishlistProvider.deleteWish(book.id!);
+                                              } else {
+                                                await wishlistProvider.addWish(book.id!);
+                                              }
+                                              // Cập nhật lại trạng thái yêu thích
+                                              bool newStatus = await wishlistProvider.checkStatus(book.id!);
+                                              setState(() {
+                                                isFavorite = newStatus;
+                                              });
+                                            }
+                                          },
+                                          child: Icon(
+                                            isFavorite ? Icons.favorite : Icons.favorite_border_outlined,
+                                            color: Colors.red,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ),
                         ],
                       ),
                       SizedBox(height: 7),
                       SizedBox(
                         width: 100,
-                        child: 
-                      Text(
-                        bookName,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
+                        child: Text(
+                          bookName,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       ),
                     ],
                   ),
