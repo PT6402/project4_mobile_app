@@ -9,26 +9,29 @@ import 'package:testtem/DTO/NewRelease.dart';
 import 'package:testtem/DTO/BookDetail.dart';
 
 class BookProvider with ChangeNotifier {
-
   final String apiUrlLike =
-      "http://192.168.1.9:9090/api/v1/statistics/toplike";
-  final String apiUrlBuy = "http://192.168.1.9:9090/api/v1/statistics/topbuy";
-  final String apiUrlNew = "http://192.168.1.9:9090/api/v1/statistics/top4";
+      "http://192.168.1.22:9090/api/v1/statistics/toplike";
+  final String apiUrlBuy = "http://192.168.1.22:9090/api/v1/statistics/topbuy";
+  final String apiUrlNew = "http://192.168.1.22:9090/api/v1/statistics/top4";
   final String apiUrlBookDetail =
-      "http://192.168.1.9:9090/api/v1/book/showone";
+      "http://192.168.1.22:9090/api/v1/book/showone";
   final String apiUrlBookStore =
-      "http://192.168.1.9:9090/api/v1/book/showpage";
+      "http://192.168.1.22:9090/api/v1/book/showpage";
 
   List<TopLike> _books = [];
+
   List<TopLike> get books => _books;
 
   List<TopBuy> _BBooks = [];
+
   List<TopBuy> get bBooks => _BBooks;
 
   List<NewRelease> _NBooks = [];
+
   List<NewRelease> get nBooks => _NBooks;
 
   BookDetail? _bookDetail;
+
   BookDetail? get bookDetail => _bookDetail;
 
   bool _isLoading = false;
@@ -37,7 +40,9 @@ class BookProvider with ChangeNotifier {
   int _currentPage = 0; // Track the current page
 
   bool get isLoading => _isLoading;
+
   bool get hasMore => _hasMore;
+
   List<BookStore> get Listbooks => _listbooks;
 
   Future<void> getTopLike() async {
@@ -105,77 +110,75 @@ class BookProvider with ChangeNotifier {
     }
   }
 
- Future<void> getBookStore({int page = 1, int limit = 10}) async {
-  if (_isLoading || !_hasMore) return;
+  Future<void> getBookStore({int page = 1, int limit = 10}) async {
+    if (_isLoading || !_hasMore) return;
 
-  _isLoading = true;
-  notifyListeners();
+    _isLoading = true;
+    notifyListeners();
 
-  try {
-    final response =
-        await http.get(Uri.parse('$apiUrlBookStore?page=$page&limit=$limit'));
+    try {
+      final response =
+          await http.get(Uri.parse('$apiUrlBookStore?page=$page&limit=$limit'));
 
-    if (response.statusCode == HttpStatus.ok) {
-      final data = json.decode(response.body);
+      if (response.statusCode == HttpStatus.ok) {
+        final data = json.decode(response.body);
 
-      // Kiểm tra chi tiết từng phần của dữ liệu JSON
-      print("Raw JSON data: $data");
+        // Kiểm tra chi tiết từng phần của dữ liệu JSON
+        print("Raw JSON data: $data");
 
-      final modelData = data['model'];
-      if (modelData != null && modelData is Map<String, dynamic>) {
-        print("Model data: $modelData");
+        final modelData = data['model'];
+        if (modelData != null && modelData is Map<String, dynamic>) {
+          print("Model data: $modelData");
 
-        final paglistData = modelData['paglist'];
-        if (paglistData != null && paglistData is List) {
-          print("Paglist data: $paglistData");
+          final paglistData = modelData['paglist'];
+          if (paglistData != null && paglistData is List) {
+            print("Paglist data: $paglistData");
 
-          final List<BookStore> paginatedBooks = [];
-          for (var item in paglistData) {
-            if (item != null && item is Map<String, dynamic>) {
-              try {
-                paginatedBooks.add(BookStore.fromJson(item));
-              } catch (e) {
-                print('Error parsing item: $item, error: $e');
+            final List<BookStore> paginatedBooks = [];
+            for (var item in paglistData) {
+              if (item != null && item is Map<String, dynamic>) {
+                try {
+                  paginatedBooks.add(BookStore.fromJson(item));
+                } catch (e) {
+                  print('Error parsing item: $item, error: $e');
+                }
+              } else {
+                print('Invalid item in paglist: $item');
               }
-            } else {
-              print('Invalid item in paglist: $item');
             }
-          }
 
-          // Kiểm tra và cập nhật _hasMore
-          if (paginatedBooks.isEmpty) {
-            _hasMore = false;
-          } else {
-            _listbooks.addAll(paginatedBooks);
-            _currentPage++;
-            print("Parsed books: $paginatedBooks");
-            print("Current book list: $_listbooks");
-
-            // Nếu số lượng kết quả trả về ít hơn limit, có nghĩa là đã tải hết dữ liệu
-            if (paginatedBooks.length < limit) {
+            // Kiểm tra và cập nhật _hasMore
+            if (paginatedBooks.isEmpty) {
               _hasMore = false;
+            } else {
+              _listbooks.addAll(paginatedBooks);
+              _currentPage++;
+              print("Parsed books: $paginatedBooks");
+              print("Current book list: $_listbooks");
+
+              // Nếu số lượng kết quả trả về ít hơn limit, có nghĩa là đã tải hết dữ liệu
+              if (paginatedBooks.length < limit) {
+                _hasMore = false;
+              }
             }
+          } else {
+            _hasMore = false;
+            print("Paglist is not a list or is empty");
           }
         } else {
           _hasMore = false;
-          print("Paglist is not a list or is empty");
+          print("Model data is not a map or is null");
         }
+
+        notifyListeners();
       } else {
-        _hasMore = false;
-        print("Model data is not a map or is null");
+        print('Failed to load data: ${response.statusCode}');
       }
-
+    } catch (e) {
+      print('Error fetching books: $e');
+    } finally {
+      _isLoading = false;
       notifyListeners();
-    } else {
-      print('Failed to load data: ${response.statusCode}');
     }
-  } catch (e) {
-    print('Error fetching books: $e');
-  } finally {
-    _isLoading = false;
-    notifyListeners();
   }
-}
-
-
 }
