@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,13 @@ class _CartItemState extends State<CartItem> {
   Logger logger = Logger();
   PackageShowbook? selectedPackage;
 
-  void handleChangeValue(value) {
+  void updateCart(int cartId, int packId) {
+    final cartProvider = Provider.of<CartProvider>(context);
+    cartProvider.updateCart(cartId, packId);
+  }
+
+  void handleChangeValue(value) async {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
     setState(() {
       if (value != null) {
         final package =
@@ -37,6 +44,9 @@ class _CartItemState extends State<CartItem> {
       // selectedPackage = value;
       // cartProvider.selectedPackage = value;
     });
+
+    final listCart = await cartProvider.updateCart(
+        widget.cartItem.cartItemId, selectedPackage?.id ?? 0);
   }
 
   @override

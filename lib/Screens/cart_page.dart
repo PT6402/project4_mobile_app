@@ -31,25 +31,34 @@ class _CartPageState extends State<CartPage> {
     super.didChangeDependencies();
   }
 
-  // double calculateTotalPrice(CartProvider cartProvider) {
-  //   double totalPrice = 0.0;
-  //   for (var item in cartProvider.cartItems) {
-  //     if (item.ibuy) {
-  //       totalPrice += item.priceBuy;
-  //     } else {
-  //       final selectedPackage = item.packlist.firstWhere(
-  //         (pack) => pack.id == item.packId,
-  //         orElse: () => PackageShowbook(
-  //           id: 0,
-  //           packageName: "Default",
-  //           dayQuantity: 0,
-  //           rentPrice: 0.0,
-  //         ),
-  //       );
-  //       totalPrice += selectedPackage.rentPrice;
-  //     }
-  //   }
-  //   return totalPrice;
+   // double totalPricePage = 0;
+
+  double calculateTotalPrice() {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    double totalPrice = 0.0;
+    for (var item in cartProvider.cartItems) {
+      if (item.ibuy) {
+        totalPrice += item.priceBuy;
+      } else {
+        final selectedPackage = item.packlist.firstWhere(
+          (pack) => pack.id == item.packId,
+          orElse: () => PackageShowbook(
+            id: 0,
+            packageName: "Default",
+            dayQuantity: 0,
+            rentPrice: 0.0,
+          ),
+        );
+        totalPrice += selectedPackage.rentPrice;
+      }
+    }
+   return totalPrice;
+  }
+
+  // void handleReload(){
+  //   setState(() {
+  //
+  //   });
   // }
 
   @override
@@ -62,6 +71,7 @@ class _CartPageState extends State<CartPage> {
       body: Consumer<CartProvider>(
         builder: (context, cartProvider, child) {
           if (cartProvider.isLoading) {
+
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -99,7 +109,7 @@ class _CartPageState extends State<CartPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'Total: \$${cartProvider.totalPrice}',
+                      'Total: \$${calculateTotalPrice()}',
                       style: const TextStyle(
                           fontSize: 20, fontWeight: FontWeight.bold),
                     ),
