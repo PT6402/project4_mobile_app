@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 import 'package:testtem/DTO/BookDetail.dart' as bookDetail;
 import 'package:testtem/DTO/CartItemShow.dart';
 
@@ -9,8 +10,8 @@ import '../core/secure_storage/storage_token.dart';
 
 class CartProvider with ChangeNotifier {
   final StorageToken bearerToken;
+  Logger logger = Logger();
   dynamic selectedPackage;
-
   CartProvider(this.bearerToken);
 
   final String apiUrlViewCart = "http://192.168.1.22:9090/api/v1/cart";
@@ -29,7 +30,7 @@ class CartProvider with ChangeNotifier {
   double _totalPrice = 0.0;
   double get totalPrice => _totalPrice;
 
-  Future<void> viewCart() async {
+  Future<List<CartItemShow>?> viewCart() async {
     _isLoading = true;
     notifyListeners();
     final accessToken = await bearerToken.getAccessToken();
@@ -52,11 +53,14 @@ class CartProvider with ChangeNotifier {
             .toList();
         calculateTotalPrice();
         notifyListeners();
+        return _cartItems;
       } else {
         print('Failed to load cart data: ${response.statusCode}');
+        return null;
       }
     } catch (e) {
       print('Error fetching cart data: $e');
+      return null;
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -117,8 +121,8 @@ class CartProvider with ChangeNotifier {
     }
   }
 
-  Future<void> updateCart(CartItemShow cartItem) async {
-    print('Goi updateCart API');
+  Future<List<CartItemShow>> updateCart(int cartItemId, int packId) async {
+    logger.i({cartItemId, packId});
     try {
       final accessToken = await bearerToken.getAccessToken();
       final response = await http.put(
@@ -128,19 +132,24 @@ class CartProvider with ChangeNotifier {
           'Content-Type': 'application/json',
         },
         body: json.encode({
-          'cartItemId': cartItem.cartItemId,
-          'packId': cartItem.packId ?? 0,
+          'cartItemId': cartItemId,
+          'packId': packId ?? 0,
           // Default to 0 if packId is null (buy option)
         }),
       );
 
       if (response.statusCode == HttpStatus.ok) {
-        await viewCart(); // Refresh cart after update
+        await viewCart();
+        logger.i({_cartItems[0].packId});
+        return _cartItems;
+        calculateTotalPrice();// Refresh cart after update
       } else {
+      return _cartItems;
         print('Failed to update cart: ${response.statusCode}');
       }
       notifyListeners();
     } catch (e) {
+      return _cartItems;
       print('Error updating cart: $e');
     }
   }
