@@ -29,6 +29,7 @@ class Debounce {
 }
 
 class BookProvider with ChangeNotifier {
+
   final String apiUrlLike = "${urlServer}/api/v1/statistics/toplike";
   final String apiUrlBuy = "${urlServer}/api/v1/statistics/topbuy";
   final String apiUrlNew = "${urlServer}/api/v1/statistics/top4";
@@ -51,15 +52,19 @@ class BookProvider with ChangeNotifier {
   final String apiUrlCate = "${urlServer}/api/v1/cate/userShow";
 
   List<TopLike> _books = [];
+
   List<TopLike> get books => _books;
 
   List<TopBuy> _BBooks = [];
+
   List<TopBuy> get bBooks => _BBooks;
 
   List<NewRelease> _NBooks = [];
+
   List<NewRelease> get nBooks => _NBooks;
 
   BookDetail? _bookDetail;
+
   BookDetail? get bookDetail => _bookDetail;
 
   bool _isLoading = false;
@@ -68,7 +73,9 @@ class BookProvider with ChangeNotifier {
   int _currentPage = 0; // Track the current page
 
   bool get isLoading => _isLoading;
+
   bool get hasMore => _hasMore;
+
   List<BookStore> get Listbooks => _listbooks;
 
   //category
@@ -172,10 +179,20 @@ class BookProvider with ChangeNotifier {
       if (response.statusCode == HttpStatus.ok) {
         final data = json.decode(response.body);
 
+
+        // Kiểm tra chi tiết từng phần của dữ liệu JSON
+        print("Raw JSON data: $data");
+
         final modelData = data['model'];
         if (modelData != null && modelData is Map<String, dynamic>) {
+          print("Model data: $modelData");
+
           final paglistData = modelData['paglist'];
           if (paglistData != null && paglistData is List) {
+            print("Paglist data: $paglistData");
+
+
+
             final List<BookStore> paginatedBooks = [];
             for (var item in paglistData) {
               if (item != null && item is Map<String, dynamic>) {
@@ -222,6 +239,8 @@ class BookProvider with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+
+
   }
 
   // Search

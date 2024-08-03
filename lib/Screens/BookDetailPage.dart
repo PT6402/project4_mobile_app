@@ -1,10 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'package:testtem/DTO/BookDetail.dart';
 import 'package:testtem/Providers/BookProvider.dart';
+import 'package:testtem/Providers/CartProvider.dart';
+import '../DTO/BookDetail.dart';
 
 class BookDetailPage extends StatefulWidget {
   final int bookId;
@@ -71,7 +70,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                             style: TextStyle(fontSize: 16),
                             textAlign: TextAlign.center,
                           ),
-SizedBox(height: 10),
+                          SizedBox(height: 10),
                           Text(
                             'Categories: ${bookDetail.catelist.map((category) => category.name).join(', ')}',
                             style: TextStyle(fontSize: 16),
@@ -126,7 +125,7 @@ SizedBox(height: 10),
                                             return Icon(
                                               index < review.rating
                                                   ? Icons.star
-: Icons.star_border,
+                                                  : Icons.star_border,
                                             );
                                           }),
                                         ),
@@ -151,12 +150,12 @@ SizedBox(height: 10),
                                     value: null,
                                     child: Text('Buy - \$${bookDetail.price}'),
                                   ),
-                                  ...bookDetail.packlist
-                                      .map((PackageShowbook package) {
+                                  ...bookDetail.packlist.map((PackageShowbook package) {
                                     return DropdownMenuItem<PackageShowbook>(
                                       value: package,
                                       child: Text(
-                                          '${package.packageName} - \$${package.rentPrice} for ${package.dayQuantity} days'),
+                                        '${package.packageName} - \$${package.rentPrice} for ${package.dayQuantity} days',
+                                      ),
                                     );
                                   }).toList(),
                                 ],
@@ -166,13 +165,39 @@ SizedBox(height: 10),
                                   });
                                 },
                               ),
+
                               SizedBox(height: 20),
                               ElevatedButton(
-                                onPressed: () {
-                                  // Implement the logic for adding to cart based on selected option and package
+                                onPressed: () async {
+                                  final cartProvider = Provider.of<CartProvider>(context, listen: false);
+
+                                  try {
+                                    await cartProvider.addToCart(
+                                      widget.bookId,
+                                      _selectedPackage == null,
+                                      packId: _selectedPackage?.id ?? 0,
+                                    );
+
+                                    await cartProvider.getCartForUpdate();
+
+                                    // Show success message
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Book added to cart successfully!'),
+                                      ),
+                                    );
+                                  } catch (e) {
+                                    // Show error message if adding to cart fails
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Failed to add book to cart. Please try again.'),
+                                      ),
+                                    );
+                                  }
                                 },
                                 child: Text('Add to Cart'),
                               ),
+
                             ],
                           ),
                         ],
