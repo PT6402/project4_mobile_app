@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:testtem/DTO/BookDetail.dart' as bookDetail;
 import 'package:testtem/DTO/CartItemShow.dart';
+import 'package:testtem/core/constants/constant_url.dart';
 
 import '../core/secure_storage/storage_token.dart';
 
@@ -14,10 +15,10 @@ class CartProvider with ChangeNotifier {
   dynamic selectedPackage;
   CartProvider(this.bearerToken);
 
-  final String apiUrlViewCart = "http://192.168.1.22:9090/api/v1/cart";
-  final String apiUrlAddToCart = "http://192.168.1.22:9090/api/v1/cart";
-  final String apiUrlRemoveFromCart = "http://192.168.1.22:9090/api/v1/cart";
-  final String apiUrlUpdateCart = "http://192.168.1.22:9090/api/v1/cart";
+  final String apiUrlViewCart = "${urlServer}/api/v1/cart";
+  final String apiUrlAddToCart = "${urlServer}/api/v1/cart";
+  final String apiUrlRemoveFromCart = "${urlServer}/api/v1/cart";
+  final String apiUrlUpdateCart = "${urlServer}/api/v1/cart";
 
   List<CartItemShow> _cartItems = [];
 
