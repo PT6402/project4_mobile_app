@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:testtem/Providers/WishlistProvider.dart';
+import 'package:testtem/Providers/CartProvider.dart';
 import 'package:testtem/core/secure_storage/storage_token.dart';
 import 'package:testtem/features/core/http/auth_http.dart';
 import 'package:testtem/features/data/data_source/remote/auth/auth_api_service.dart';
@@ -22,6 +23,7 @@ import 'package:testtem/features/domain/usecases/user/user_get_usecase.dart';
 import 'package:testtem/features/presentation/bloc/auth/auth_bloc.dart';
 
 final sl = GetIt.instance;
+
 Future<void> init() async {
   final dio = Dio();
   final storageToken = StorageToken();
@@ -51,5 +53,8 @@ Future<void> init() async {
 
   sl.registerFactory<AuthBloc>(
       () => AuthBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
-      sl.registerSingleton<WishListProvider>(WishListProvider(storageToken));
+
+  sl.registerSingleton<WishListProvider>(WishListProvider(storageToken));
+  sl.registerSingleton<CartProvider>(CartProvider(storageToken));
+
 }

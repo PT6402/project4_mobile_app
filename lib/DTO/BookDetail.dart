@@ -71,11 +71,13 @@ class ReviewShow1 {
 }
 
 class PackageShowbook {
+  final int id;
   final String packageName;
   final double rentPrice;
   final int dayQuantity;
 
   PackageShowbook({
+    required this.id,
     required this.packageName,
     required this.rentPrice,
     required this.dayQuantity,
@@ -83,11 +85,23 @@ class PackageShowbook {
 
   factory PackageShowbook.fromJson(Map<String, dynamic> json) {
     return PackageShowbook(
+      id: json['id'] ?? 0,
       packageName: json['packageName'],
       rentPrice: json['rentPrice']?.toDouble() ?? 0.0,
       dayQuantity: json['dayQuantity'] ?? 0,
     );
   }
+
+  // Implement equality and hashcode
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is PackageShowbook &&
+              runtimeType == other.runtimeType &&
+              id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }
 
 class AuthorUserRes {
