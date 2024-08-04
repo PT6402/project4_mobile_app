@@ -31,16 +31,20 @@ Future<void> init() async {
   final cookieJar =
       PersistCookieJar(storage: FileStorage("${appDocDir.path}/cookies"));
 
+  // http
   sl.registerSingleton<Dio>(dio);
   sl.registerSingleton<StorageToken>(storageToken);
   sl.registerSingleton<AuthHttp>(AuthHttp(dio, storageToken, cookieJar));
 
+  // remote
   sl.registerSingleton<AuthApiService>(AuthApiService(sl()));
   sl.registerSingleton<UserApiService>(UserApiService(sl(), sl()));
 
+  // repository
   sl.registerSingleton<AuthRepo>(AuthRepoImpl(sl(), sl()));
   sl.registerSingleton<UserRepo>(UserRepoImpl(sl(), sl()));
 
+  // usecase
   sl.registerSingleton<AuthLoginUsecase>(AuthLoginUsecase(sl()));
   sl.registerSingleton<AuthLoginGgUsecase>(AuthLoginGgUsecase(sl()));
   sl.registerSingleton<AuthRegisterUsecase>(AuthRegisterUsecase(sl()));
@@ -51,6 +55,7 @@ Future<void> init() async {
 
   sl.registerSingleton<UserGetUsecase>(UserGetUsecase(sl()));
 
+  //bloC
   sl.registerFactory<AuthBloc>(
       () => AuthBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
 
