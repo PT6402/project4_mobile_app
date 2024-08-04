@@ -188,15 +188,14 @@ class _BookDetailPageState extends State<BookDetailPage> {
                                                 ),
                                                 SizedBox(width: 10),
                                                 Row(
-                                                  children:
-                                                      List.generate(5, (index) {
+                                                  children: List.generate(5, (index) {
                                                     return Icon(
-                                                      index < review.rating
-                                                          ? Icons.star
-                                                          : Icons.star_border,
+                                                      index < review.rating ? Icons.star : Icons.star_border,
+                                                      color: index < review.rating ? Colors.yellow : Colors.grey,
                                                     );
                                                   }),
                                                 ),
+
                                               ],
                                             ),
                                             Text(review.content),
