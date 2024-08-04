@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:testtem/Providers/BookProvider.dart';
+import 'package:testtem/Providers/WishlistProvider.dart';
 import 'package:testtem/Widgets/BookListBuy.dart';
 import 'package:testtem/Widgets/BookListLike.dart';
 import 'package:testtem/Widgets/BookSlider.dart';
@@ -19,10 +20,12 @@ class _HomePageState extends State<HomePage> {
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      final bookProvider = Provider.of<BookProvider>(context);
+      final bookProvider = Provider.of<BookProvider>(context,listen: false);
       bookProvider.getTopLike();
       bookProvider.getTopBuy();
       bookProvider.getTopNew();
+      final wishlistprovider=Provider.of<WishListProvider>(context,listen: false);
+      wishlistprovider.getWishlist();
       _isInit = false;
     }
     super.didChangeDependencies();

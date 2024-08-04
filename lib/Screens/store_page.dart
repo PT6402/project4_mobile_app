@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:testtem/Providers/BookProvider.dart';
+import 'package:testtem/Providers/WishlistProvider.dart';
+import 'package:testtem/features/presentation/bloc/auth/auth_bloc.dart';
 
 class StorePage extends StatefulWidget {
   @override
@@ -10,7 +15,8 @@ class StorePage extends StatefulWidget {
 }
 
 class _StorePageState extends State<StorePage> {
-    bool _noBooksFound = false; // Thêm biến trạng thái
+  bool _noBooksFound = false; // Thêm biến trạng thái
+
   @override
   void initState() {
     super.initState();
@@ -55,9 +61,7 @@ class _StorePageState extends State<StorePage> {
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        
         children: [
-          
           AnimatedCrossFade(
             duration: Duration(milliseconds: 300),
             firstChild: Container(), // Empty container when not expanded
@@ -152,12 +156,15 @@ class _StorePageState extends State<StorePage> {
             crossFadeState: _isFilterExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
           ),
           if (_noBooksFound) // Hiển thị thông báo nếu không có sách
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'The book not found',
-              style: TextStyle(color: Colors.red, fontSize: 16),
-            ),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                'THE BOOK NOT FOUND',
+                style: TextStyle(color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            )
           ),
           Expanded(
             child: NotificationListener<ScrollNotification>(
@@ -248,6 +255,51 @@ class _StorePageState extends State<StorePage> {
                                     ],
                                   ),
                                 ],
+                              ),
+                            ),
+                            Positioned(
+                              child: Consumer<WishListProvider>(
+                                builder: (context, wishlistProvider, child) {
+                                  var state = BlocProvider.of<AuthBloc>(context).state;
+                                  return FutureBuilder<bool>(
+                                    future: state.user != null ? wishlistProvider.checkStatus(book.id!) : Future.value(false),
+                                    builder: (context, snapshot) {
+                                      bool isFavorite = snapshot.data ?? false;
+                                      return StatefulBuilder(
+                                        builder: (context, setState) {
+                                          return GestureDetector(
+                                            onTap: () async {
+                                              if (state.user == null) {
+                                                context.pushNamed("login");
+                                              } else {
+                                                if (isFavorite) {
+                                                  await wishlistProvider.deleteWish(book.id!);
+                                                } else {
+                                                  await wishlistProvider.addWish(book.id!);
+                                                }
+                                                // Cập nhật lại trạng thái yêu thích
+                                                bool newStatus = await wishlistProvider.checkStatus(book.id!);
+                                                setState(() {
+                                                  isFavorite = newStatus;
+                                                });
+                                              }
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.transparent,
+                                              ),
+                                              child: Icon(
+                                                isFavorite ? Icons.favorite : Icons.favorite_border,
+                                                color: isFavorite ? Colors.red : Colors.grey,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  );
+                                },
                               ),
                             ),
                           ],

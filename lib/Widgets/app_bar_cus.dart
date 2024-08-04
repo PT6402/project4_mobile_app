@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconly/iconly.dart';
+import 'package:provider/provider.dart';
+import 'package:testtem/Providers/WishlistProvider.dart';
 import 'package:testtem/features/presentation/bloc/auth/auth_bloc.dart';
 import 'package:testtem/features/presentation/bloc/auth/auth_state.dart';
 
-class AppBarCus extends StatelessWidget implements PreferredSizeWidget {
+
+ class AppBarCus extends StatelessWidget implements PreferredSizeWidget {
   @override
   final Size preferredSize;
   const AppBarCus({super.key})
@@ -15,62 +18,69 @@ class AppBarCus extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        return AppBar(
-          title: Transform.translate(
-            offset: const Offset(-20, 0),
-            child: Text("The book shelf",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(fontSize: 15)),
-          ),
-          actions: [
-            GestureDetector(
-                onTap: () => context.pushNamed("search"),
-                child: const Icon(IconlyLight.search)),
-            const SizedBox(
-              width: 10,
-            ),
-            state.user != null
-                ? Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          context.pushNamed("wishlist");
-                        },
+        return Consumer<WishListProvider>(
+          builder: (context, wishlistProvider, child) {
+            int countW = wishlistProvider.listshow.length;
+            return AppBar(
+              title: Transform.translate(
+                offset: const Offset(-20, 0),
+                child: Text("The book shelf",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(fontSize: 15)),
+              ),
+              actions: [
+                GestureDetector(
+                    onTap: () => context.pushNamed("search"),
+                    child: const Icon(IconlyLight.search)),
+                const SizedBox(
+                  width: 10,
+                ),
+                state.user != null
+                    ? Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              context.pushNamed("wishlist");
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 3,
+                              ),
+                              child: Row(
+                                children: [Icon(IconlyLight.heart), Text('$countW')],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                        ],
+                      )
+                    : const SizedBox(),
+                state.user == null
+                    ? const SizedBox()
+                    : GestureDetector(
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 3,
-                          ),
-                          child: const Row(
-                            children: [Icon(IconlyLight.heart), Text("1")],
-                          ),
-                        ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 3,
+                            ),
+                            child: const Row(
+                              children: [Icon(IconlyLight.notification), Text("1")],
+                            )),
+                        onTap: () {},
                       ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                    ],
-                  )
-                : const SizedBox(),
-            state.user == null
-                ? const SizedBox()
-                : GestureDetector(
-                    child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 3,
-                        ),
-                        child: const Row(
-                          children: [Icon(IconlyLight.notification), Text("1")],
-                        )),
-                    onTap: () {},
-                  ),
-            const SizedBox(
-              width: 10,
-            ),
-          ],
+                const SizedBox(
+                  width: 10,
+                ),
+              ],
+            );
+          },
         );
       },
     );
   }
 }
+
+

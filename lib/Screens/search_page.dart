@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:testtem/Providers/BookProvider.dart';
+import 'package:testtem/features/presentation/bloc/auth/auth_bloc.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -36,7 +38,8 @@ class _SearchPageState extends State<SearchPage> {
                       if (value.isNotEmpty) {
                         bookProvider.search(value);
                       } else {
-                        bookProvider.search(''); // Clear search results if query is empty
+                        bookProvider.search(
+                            ''); // Clear search results if query is empty
                       }
                     },
                     decoration: InputDecoration(
@@ -85,35 +88,66 @@ class _SearchPageState extends State<SearchPage> {
                             return Card(
                               margin: EdgeInsets.symmetric(vertical: 8.0),
                               elevation: 4.0,
-                              child: ListTile(
-                                contentPadding: EdgeInsets.all(8.0),
-                                leading: result.image.isNotEmpty
-                                    ? Image.memory(
-                                        result.image,
-                                        width: 50,
-                                        height: 75,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Icon(Icons.book, size: 50),
-                                title: Text(result.name),
-                                 subtitle: bookProvider.selectedCriteria == 'Book Name'
-                                    ? Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('Price: \$${result.price.toStringAsFixed(2)}'),
-                                          Text('Rating: ${result.rating.toStringAsFixed(1)}'),
-                                        ],
-                                      )
-                                    : null,
-                                onTap: () {
-                                  if (bookProvider.selectedCriteria == 'Book Name') {
-                                    context.push("/bookDetail/${result.bookId}");
-                                  } else if (bookProvider.selectedCriteria == 'Author Name') {
-                                    context.push("/authorDetail/${result.authorId}");
-                                  } else {
-                                    context.push("/publisherDetail/${result.pubId}");
-                                  }
-                                },
+                              child: Stack(
+                                children: [
+                                  ListTile(
+                                    contentPadding: EdgeInsets.all(8.0),
+                                    leading: result.image.isNotEmpty
+                                        ? Image.memory(
+                                            result.image,
+                                            width: 50,
+                                            height: 75,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Icon(Icons.book, size: 50),
+                                    title: Text(result.name),
+                                    subtitle: bookProvider.selectedCriteria ==
+                                            'Book Name'
+                                        ? Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                  'Price: \$${result.price.toStringAsFixed(2)}'),
+                                              Text(
+                                                  'Rating: ${result.rating.toStringAsFixed(1)}'),
+                                            ],
+                                          )
+                                        : null,
+                                    onTap: () {
+                                      if (bookProvider.selectedCriteria ==
+                                          'Book Name') {
+                                        context.push(
+                                            "/bookDetail/${result.bookId}");
+                                      } else if (bookProvider
+                                              .selectedCriteria ==
+                                          'Author Name') {
+                                        context.push(
+                                            "/authorDetail/${result.authorId}");
+                                      } else {
+                                        context.push(
+                                            "/publisherDetail/${result.pubId}");
+                                      }
+                                    },
+                                  ),
+                                  Positioned(
+                                    top: 30,
+                                    right: 5,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        var state =
+                                            BlocProvider.of<AuthBloc>(context)
+                                                .state;
+                                        if (state.user == null) {
+                                          context.pushNamed("login");
+                                        }
+                                      },
+                                      child: Icon(
+                                          Icons.favorite_border_outlined,
+                                          color: Colors.red),
+                                    ),
+                                  ),
+                                ],
                               ),
                             );
                           },
