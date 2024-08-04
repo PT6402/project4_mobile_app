@@ -17,6 +17,86 @@ class DrawerCus extends StatefulWidget {
 }
 
 class _DrawerCusState extends State<DrawerCus> {
+  void _showAboutUsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: FractionallySizedBox(
+            widthFactor: 1,
+            heightFactor: 0.66,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Center(
+                    child: Text(
+                      'E- Bookshelf',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text('- Version: 5.4.3.3',
+                              style: TextStyle(fontSize: 15)),
+                          Text('- Liscene: 0123987233 KHDK HCMC',
+                              style: TextStyle(fontSize: 15)),
+                          SizedBox(height: 10),
+                          Text(
+                              'Address: 686 Xo Viet Nghe Tinh,Ward 25, Binh Thanh, HCMC',
+                              style: TextStyle(fontSize: 15)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Center(
+                    child: Image.asset(
+                      'assets/images/ebook.jpeg',
+                      height: 200,
+                      width: 300,
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange.withOpacity(0.5),  // Màu nền của nút
+                        foregroundColor: Colors.white, // Màu chữ của nút
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 40.0,
+                            vertical:
+                                12.0), // Kích thước padding để làm cho nút rộng ra
+                        minimumSize:
+                            Size(150, 40), // Kích thước tối thiểu của nút
+                      ),
+                      child: Text('Confirm',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
@@ -41,7 +121,7 @@ class _DrawerCusState extends State<DrawerCus> {
                             email: state.user!.email!,
                           ),
                           SideMenuTile(
-                            name: "Order",
+                            name: "Order History",
                             icon: IconlyLight.time_circle,
                             isActive: false,
                             press: () {
@@ -62,7 +142,8 @@ class _DrawerCusState extends State<DrawerCus> {
                               icon: IconlyLight.user_1,
                               isActive: false,
                               press: () {
-                                context.pushNamed("aboutUs");
+                                Navigator.pop(context);
+                                _showAboutUsDialog(context);
                               },
                             ),
                           ),
@@ -111,7 +192,8 @@ class _DrawerCusState extends State<DrawerCus> {
                         icon: IconlyLight.user_1,
                         isActive: false,
                         press: () {
-                          context.pushNamed("aboutUs");
+                          Navigator.pop(context);
+                          _showAboutUsDialog(context);
                         },
                       ),
                     ],
@@ -122,3 +204,4 @@ class _DrawerCusState extends State<DrawerCus> {
     });
   }
 }
+
