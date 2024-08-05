@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 import 'package:testtem/Providers/BookProvider.dart';
 import 'package:testtem/Providers/WishlistProvider.dart';
 import 'package:testtem/config/routers/router_provider.dart';
+import 'package:testtem/core/constants/constant_url.dart';
 import 'package:testtem/features/injection_container.dart';
 import 'package:testtem/features/presentation/bloc/auth/auth_bloc.dart';
 
@@ -11,6 +13,7 @@ import 'Providers/CartProvider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await _setup();
   await init();
   runApp(
     MultiBlocProvider(providers: [
@@ -20,6 +23,11 @@ void main() async {
       ChangeNotifierProvider(create: (_) => CartProvider(sl())),
     ], child: const MyApp()),
   );
+}
+
+Future<void> _setup() async {
+  Stripe.publishableKey = stripePublishableKey;
+  await Stripe.instance.applySettings(); // Add this line to ensure settings are applied
 }
 
 class MyApp extends StatelessWidget {

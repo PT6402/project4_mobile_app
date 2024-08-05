@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:testtem/Providers/CartProvider.dart';
 import 'package:testtem/Widgets/cart_item.dart';
+import 'package:testtem/services/stripe_service.dart';
 import '../DTO/CartItemShow.dart';
 
 class CartPage extends StatefulWidget {
@@ -117,6 +118,7 @@ class _CartPageState extends State<CartPage> {
                     ElevatedButton(
                       onPressed: () {
                         // Handle checkout logic here
+                        StripeService.instance.makePayment();
                       },
                       // style: ElevatedButton.styleFrom(
                       //   padding: const EdgeInsets.symmetric(vertical: 16),
