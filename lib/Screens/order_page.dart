@@ -1,171 +1,127 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:testtem/themes/light_color.dart';
-import 'package:testtem/themes/theme.dart';
+import 'package:provider/provider.dart';
+import 'package:testtem/DTO/Order.dart';
+import 'package:testtem/Providers/OrderProvider.dart';
 
-import '../Widgets/tile_text.dart';
 
-class OrderPage extends StatelessWidget {
-  const OrderPage({super.key});
+class OrderPage extends StatefulWidget {
+  OrderPage({super.key});
+  @override
+  _OrderPageState createState() => _OrderPageState();
+}
 
-  Widget _orderItems() {
-    return Column(
-      children: [
-        _item(
-          name: 'Book 1',
-          price: 29.99,
-          quantity: 1,
-          image: 'assets/book1.jpg', // Replace with your image path
-        ),
-        _item(
-          name: 'Book 2',
-          price: 49.99,
-          quantity: 2,
-          image: 'assets/book2.jpg', // Replace with your image path
-        ),
-      ],
-    );
+class _OrderPageState extends State<OrderPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch orders when the page is loaded
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<OrderProvider>(context, listen: false).getOrder();
+    });
   }
 
-  Widget _item({required String name, required double price, required int quantity, required String image}) {
-    return Container(
-      height: 80,
-      child: Row(
-        children: <Widget>[
-          AspectRatio(
-            aspectRatio: 1.2,
-            child: Stack(
-              children: <Widget>[
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Container(
-                    height: 70,
-                    width: 70,
-                    child: Stack(
-                      children: <Widget>[
-                        Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: LightColor.lightGrey,
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
-                        ),
-                      ],
+  void showReviewModal(BuildContext context, ReviewDetail review) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        double rating = review.star;
+        TextEditingController reviewController = TextEditingController(text: review.content);
+
+        return AlertDialog(
+          title: Text('Write a Review'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: List.generate(5, (index) {
+                  return IconButton(
+                    icon: Icon(
+                      index < rating ? Icons.star : Icons.star_border,
+                      color: Colors.amber,
                     ),
-                  ),
-                ),
-                Positioned(
-                  left: -20,
-                  bottom: -20,
-                  child: Image.asset(image),
-                )
-              ],
-            ),
+                    onPressed: () {
+                      setState(() {
+                        rating = index + 1.0;
+                      });
+                    },
+                  );
+                }),
+              ),
+              TextField(
+                controller: reviewController,
+                decoration: InputDecoration(hintText: 'Write your review here'),
+              ),
+            ],
           ),
-          Expanded(
-            child: ListTile(
-              title: TitleText(
-                text: name,
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-              ),
-              subtitle: Row(
-                children: <Widget>[
-                  TitleText(
-                    text: '\$ ',
-                    color: LightColor.red,
-                    fontSize: 12,
-                  ),
-                  TitleText(
-                    text: price.toString(),
-                    fontSize: 14,
-                  ),
-                ],
-              ),
-              trailing: Container(
-                width: 35,
-                height: 35,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: LightColor.lightGrey.withAlpha(150),
-                    borderRadius: BorderRadius.circular(10)),
-                child: TitleText(
-                  text: 'x$quantity',
-                  fontSize: 12,
-                ),
-              ),
+          actions: [
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _price() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        TitleText(
-          text: '2 Items',
-          color: LightColor.grey,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-        TitleText(
-          text: '\$129.97',
-          fontSize: 18,
-        ),
-      ],
-    );
-  }
-
-  Widget _submitButton(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        // Implement the order submission logic
+            TextButton(
+              child: Text('Submit'),
+              onPressed: () {
+                // Xử lý logic submit đánh giá ở đây
+                setState(() {
+                  review.setStar(rating);
+                  review.setContent(reviewController.text);
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
       },
-      style: ButtonStyle(
-        shape: MaterialStateProperty.all(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        ),
-        backgroundColor: MaterialStateProperty.all<Color>(LightColor.orange),
-      ),
-      child: Container(
-        alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(vertical: 4),
-        width: AppTheme.fullWidth(context) * .75,
-        child: TitleText(
-          text: 'Place Order',
-          color: LightColor.background,
-          fontWeight: FontWeight.w500,
-          fontSize: 10,
-        ),
-      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Order Summary"),
-      ),
-      body: Container(
-        padding: AppTheme.padding,
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              _orderItems(),
-              Divider(
-                thickness: 1,
-                height: 70,
-              ),
-              _price(),
-              SizedBox(height: 30),
-              _submitButton(context),
-            ],
-          ),
-        ),
+      appBar: AppBar(title: Text('Order History')),
+      body: Consumer<OrderProvider>(
+        builder: (context, orderProvider, child) {
+          if (orderProvider.orderlist.isEmpty) {
+            return Center(child: CircularProgressIndicator());
+          }
+          return ListView.builder(
+            itemCount: orderProvider.orderlist.length,
+            itemBuilder: (context, index) {
+              Order order = orderProvider.orderlist[index];
+              return Card(
+                child: ExpansionTile(
+                  title: Text('Order ID: ${order.orderId}'),
+                  subtitle: Text('Payment Status: ${order.paymentStatus ? 'Paid' : 'Unpaid'}'),
+                  children: order.orderDetails.map((detail) {
+                    return ListTile(
+                      title: Text('Book Name: ${detail.bookName}'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Book ID: ${detail.bookId}'),
+                          Text('Price: \$${detail.price}'),
+                          Text('Day Package: ${detail.dayPackage} days'),
+                          Text('Pack ID: ${detail.packId}'),
+                          Text('Pack Name: ${detail.packName}'),
+                          Image.memory(detail.image),
+                          ElevatedButton(
+                            child: Text('Review'),
+                            onPressed: () {
+                              showReviewModal(context, detail.review);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

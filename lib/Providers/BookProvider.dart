@@ -70,7 +70,7 @@ class BookProvider with ChangeNotifier {
   bool _isLoading = false;
   bool _hasMore = true;
   List<BookStore> _listbooks = [];
-  int _currentPage = 0; // Track the current page
+  int _currentPage = 1; // Track the current page
 
   bool get isLoading => _isLoading;
 
@@ -166,7 +166,7 @@ class BookProvider with ChangeNotifier {
     }
   }
 
-  Future<void> getBookStore({int page = 1, int limit = 10}) async {
+  Future<void> getBookStore() async {
     if (_isLoading || !_hasMore) return;
 
     _isLoading = true;
@@ -174,7 +174,7 @@ class BookProvider with ChangeNotifier {
 
     try {
       final response =
-          await http.get(Uri.parse('$apiUrlBookStore?page=$page&limit=$limit'));
+          await http.get(Uri.parse('$apiUrlBookStore?page=$_currentPage'));
 
       if (response.statusCode == HttpStatus.ok) {
         final data = json.decode(response.body);
@@ -216,7 +216,7 @@ class BookProvider with ChangeNotifier {
               print("Current book list: $_listbooks");
 
               // Nếu số lượng kết quả trả về ít hơn limit, có nghĩa là đã tải hết dữ liệu
-              if (paginatedBooks.length < limit) {
+              if (paginatedBooks.length < 10) {
                 _hasMore = false;
               }
             }
