@@ -6,13 +6,17 @@ class Order {
   final bool paymentStatus;
   final List<OrderDetails> orderDetails;
 
-  Order({required this.orderId, required this.paymentStatus, required this.orderDetails});
+  Order({
+    required this.orderId,
+    required this.paymentStatus,
+    required this.orderDetails,
+  });
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       orderId: json['orderId'] ?? 0,
-      paymentStatus: (json['paymentStatus'] ?? 0) == 1, // Convert int to bool
-      orderDetails: (json['orderDetails'] as List? ?? [])
+      paymentStatus: (json['paymentStatus'] ?? 0) == 1, // Điều chỉnh nếu cần
+      orderDetails: (json['orderDetailsFlutter'] as List<dynamic>? ?? [])
           .map((detail) => OrderDetails.fromJson(detail))
           .toList(),
     );
@@ -27,7 +31,7 @@ class OrderDetails {
   final Uint8List image;
   final int packId;
   final String? packName;
-  final ReviewDetail review;
+  final List<ReviewDetail> reviews;
 
   OrderDetails({
     required this.bookId,
@@ -37,7 +41,7 @@ class OrderDetails {
     required this.image,
     required this.packId,
     this.packName,
-    required this.review,
+    required this.reviews,
   });
 
   factory OrderDetails.fromJson(Map<String, dynamic> json) {
@@ -50,26 +54,33 @@ class OrderDetails {
           ? base64Decode(json['image'])
           : Uint8List(0),
       packId: json['packId'] ?? 0,
-      packName: json['packName'] ?? '',
-      review: json['review'] != null
-          ? ReviewDetail.fromJson(json['review'])
-          : ReviewDetail(star: 0.0, content: '', id: 0),
+      packName: json['packName'],
+      reviews: (json['reviews'] as List<dynamic>? ?? [])
+          .map((review) => ReviewDetail.fromJson(review))
+          .toList(),
     );
   }
 }
 
 class ReviewDetail {
-  double star;
-  String content;
-  int id;
+ double star;
+   String content;
+  final int id;
+  final DateTime createDate;
 
-  ReviewDetail({required this.star, required this.content, required this.id});
+  ReviewDetail({
+    required this.star,
+    required this.content,
+    required this.id,
+    required this.createDate,
+  });
 
   factory ReviewDetail.fromJson(Map<String, dynamic> json) {
     return ReviewDetail(
       star: (json['star'] ?? 0.0).toDouble(),
       content: json['content'] ?? '',
       id: json['id'] ?? 0,
+      createDate: DateTime.parse(json['createDate'] ?? '1970-01-01T00:00:00.000Z'), // Đặt giá trị mặc định nếu không có
     );
   }
 
