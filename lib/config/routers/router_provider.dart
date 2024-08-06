@@ -11,6 +11,7 @@ import 'package:testtem/Screens/cart_page.dart';
 import 'package:testtem/Screens/my_book_page.dart';
 import 'package:testtem/Screens/order_page.dart';
 import 'package:testtem/Screens/publisher_page.dart';
+import 'package:testtem/Screens/read_page.dart';
 import 'package:testtem/Screens/search_page.dart';
 import 'package:testtem/Screens/store_page.dart';
 import 'package:testtem/features/presentation/pages/auth/authenticate/login_page.dart';
@@ -173,6 +174,16 @@ class RouterProvider {
           name: "wishlist",
           builder: (context, state) {
             return WishlistScreen(key: state.pageKey);
+          },
+        ),
+        GoRoute(
+          path: "/readpage",
+          name: "readpage",
+          builder: (context, state) {
+            final bookId=state.pathParameters["bookId"]!;
+            return ReadPage(
+              key: state.pageKey,
+              bookId: int.parse(bookId),);
           },
         ),
       ]);

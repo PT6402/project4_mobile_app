@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:testtem/Providers/BookProvider.dart';
 import 'package:testtem/Providers/MyBookProvider.dart';
 import 'package:testtem/Providers/OrderProvider.dart';
+import 'package:testtem/Providers/ReadProvider.dart';
 import 'package:testtem/Providers/WishlistProvider.dart';
 import 'package:testtem/config/routers/router_provider.dart';
 import 'package:testtem/features/injection_container.dart';
@@ -22,6 +23,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => CartProvider(sl())),
       ChangeNotifierProvider(create: (_) => OrderProvider(sl())),
         ChangeNotifierProvider(create: (_) => MyBookProvider(sl())),
+          ChangeNotifierProvider(create: (_) => ReadProvider(sl())),
     ], child: const MyApp()),
   );
 }

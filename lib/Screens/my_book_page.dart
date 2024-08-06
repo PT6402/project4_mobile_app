@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:testtem/Providers/MyBookProvider.dart';
+import 'package:testtem/Screens/read_page.dart';
 
 class MyBookPage extends StatefulWidget {
   const MyBookPage({super.key});
@@ -97,14 +98,19 @@ class _MyBookPageState extends State<MyBookPage> {
                             backgroundColor:Colors.green,
                             foregroundColor:Colors.white,
                           ),
-                          child: Text(detail.status ? 'Buy':'Rent',style: TextStyle(fontWeight: FontWeight.bold),),
+                          child: Text(detail.status ? 'Rent':'Buy',style: TextStyle(fontWeight: FontWeight.bold),),
                           
                           onPressed: () {},
                         ),),
                         SizedBox(height: 10),
                         ElevatedButton(
                           child: Text('Read Book'),
-                          onPressed: () {},
+                          onPressed: () {
+                             Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ReadPage(bookId: detail.bookId),),);
+                          },
                         ),
                       ],
                     ),
