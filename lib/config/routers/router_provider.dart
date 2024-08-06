@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:testtem/Screens/BookDetailPage.dart';
 import 'package:testtem/Screens/HomePage.dart';
 import 'package:testtem/Screens/Wishlist.dart';
-import 'package:testtem/Screens/about_us_page.dart';
+
 import 'package:testtem/Screens/author_page.dart';
 import 'package:testtem/Screens/cart_page.dart';
 import 'package:testtem/Screens/my_book_page.dart';
@@ -160,13 +160,7 @@ class RouterProvider {
             return SearchPage(key: state.pageKey);
           },
         ),
-        GoRoute(
-          path: "/about-us",
-          name: "aboutUs",
-          builder: (context, state) {
-            return AboutUsPage(key: state.pageKey);
-          },
-        ),
+  
         GoRoute(
           path: "/order",
           name: "order",

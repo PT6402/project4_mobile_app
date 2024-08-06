@@ -34,6 +34,14 @@ class _DrawerCusState extends State<DrawerCus> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  SizedBox(height: 30),
+                  Center(
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      height: 80,
+                      width: 100,
+                    ),
+                  ),
                   Center(
                     child: Text(
                       'E- Bookshelf',
@@ -49,40 +57,36 @@ class _DrawerCusState extends State<DrawerCus> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text('- Version: 5.4.3.3',
-                              style: TextStyle(fontSize: 15)),
-                          Text('- Liscene: 0123987233 KHDK HCMC',
-                              style: TextStyle(fontSize: 15)),
+                          Text('- Version: 5.4.3.3', style: TextStyle(fontSize: 15)),
+                          Text('- License: 0123987233 KHDK HCMC', style: TextStyle(fontSize: 15)),
                           SizedBox(height: 10),
-                          Text(
-                              'Address: 686 Xo Viet Nghe Tinh,Ward 25, Binh Thanh, HCMC',
-                              style: TextStyle(fontSize: 15)),
+                          Text('Address: 686 Xo Viet Nghe Tinh, Ward 25, Binh Thanh, HCMC', style: TextStyle(fontSize: 15)),
+                          SizedBox(height: 30),
+                          Center(
+                            child: Image.asset(
+                              'assets/images/ebook.jpeg',
+                              height: 200,
+                              width: 300,
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(height: 30),
-                  Center(
-                    child: Image.asset(
-                      'assets/images/ebook.jpeg',
-                      height: 200,
-                      width: 300,
-                    ),
-                  ),
+                  SizedBox(height: 20), // Add spacing before the button
                   Align(
                     alignment: Alignment.center,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange.withOpacity(0.5),  // Màu nền của nút
+                        backgroundColor: Colors.orange.withOpacity(0.5), // Màu nền của nút
                         foregroundColor: Colors.white, // Màu chữ của nút
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 40.0,
-                            vertical:
-                                12.0), // Kích thước padding để làm cho nút rộng ra
-                        minimumSize:
-                            Size(150, 40), // Kích thước tối thiểu của nút
+                        padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 12.0), // Kích thước padding để làm cho nút rộng ra
+                        minimumSize: Size(150, 40), // Kích thước tối thiểu của nút
                       ),
-                      child: Text('Confirm',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),),
+                      child: Text(
+                        'Confirm',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      ),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
@@ -204,4 +208,3 @@ class _DrawerCusState extends State<DrawerCus> {
     });
   }
 }
-
