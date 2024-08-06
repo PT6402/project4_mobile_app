@@ -10,6 +10,8 @@ import 'package:testtem/Providers/BookProvider.dart';
 import 'package:testtem/Providers/WishlistProvider.dart';
 import 'package:testtem/features/presentation/bloc/auth/auth_bloc.dart';
 
+import '../Providers/CartProvider.dart';
+
 class BookDetailPage extends StatefulWidget {
   final int bookId;
 
@@ -71,7 +73,6 @@ class _BookDetailPageState extends State<BookDetailPage> {
                                     var state =
                                         BlocProvider.of<AuthBloc>(context)
                                             .state;
-
                                     return FutureBuilder<bool>(
                                       future: state.user != null
                                           ? wishlistProvider
@@ -188,14 +189,19 @@ class _BookDetailPageState extends State<BookDetailPage> {
                                                 ),
                                                 SizedBox(width: 10),
                                                 Row(
-                                                  children: List.generate(5, (index) {
+                                                  children:
+                                                      List.generate(5, (index) {
                                                     return Icon(
-                                                      index < review.rating ? Icons.star : Icons.star_border,
-                                                      color: index < review.rating ? Colors.yellow : Colors.grey,
+                                                      index < review.rating
+                                                          ? Icons.star
+                                                          : Icons.star_border,
+                                                      color:
+                                                          index < review.rating
+                                                              ? Colors.yellow
+                                                              : Colors.grey,
                                                     );
                                                   }),
                                                 ),
-
                                               ],
                                             ),
                                             Text(review.content),
@@ -234,8 +240,36 @@ class _BookDetailPageState extends State<BookDetailPage> {
                               ),
                               SizedBox(height: 20),
                               ElevatedButton(
-                                onPressed: () {
-                                  // Implement the logic for adding to cart based on selected option and package
+                                onPressed: () async {
+                                  final cartProvider =
+                                      Provider.of<CartProvider>(context,
+                                          listen: false);
+
+                                  try {
+                                    await cartProvider.addToCart(
+                                      widget.bookId,
+                                      _selectedPackage == null,
+                                      packId: _selectedPackage?.id ?? 0,
+                                    );
+
+                                    await cartProvider.getCartForUpdate();
+
+                                    // Show success message
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            'Book added to cart successfully!'),
+                                      ),
+                                    );
+                                  } catch (e) {
+                                    // Show error message if adding to cart fails
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            'Failed to add book to cart. Please try again.'),
+                                      ),
+                                    );
+                                  }
                                 },
                                 child: Text('Add to Cart'),
                               ),

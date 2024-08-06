@@ -9,7 +9,8 @@ import 'package:testtem/core/secure_storage/storage_token.dart';
 
 class OrderProvider with ChangeNotifier {
   final StorageToken bareToken;
-  final String apiUrlOrderShow = "${urlServer}/api/v1/orders";
+  final String apiUrlOrderShow = "${urlServer}/api/v1/orders/Fget";
+  final String apiUrlReview = "${urlServer}/api/v1/reviews/F";
   OrderProvider(this.bareToken);
 
   List<Order> _orderlist = [];
@@ -23,9 +24,7 @@ class OrderProvider with ChangeNotifier {
         headers: {'Authorization': 'Bearer $token!'},
       );
       if (response.statusCode == HttpStatus.ok) {
-        print("Response body: ${response.body}");
         final data = json.decode(response.body);
-
         if (data['model'] is List) {
           _orderlist = (data['model'] as List)
               .map((json) => Order.fromJson(json))
@@ -45,4 +44,43 @@ class OrderProvider with ChangeNotifier {
       throw Exception("Oops, something went wrong");
     }
   }
+
+  // Create new review and return the message
+  Future<String> createReview(int bookId, double rating, String content) async {
+  try {
+    final token = await bareToken.getAccessToken();
+    final response = await http.post(
+      Uri.parse(apiUrlReview),
+      headers: {
+        'Authorization': 'Bearer $token!',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'content': content,
+        'rating': rating.toInt(),
+        'bookId': bookId,
+      }),
+    );
+
+    if (response.statusCode == HttpStatus.ok) {
+      final data = json.decode(response.body);
+      print("Response body: ${response.body}");
+
+      if (data['status']) {
+        print("Review created successfully: ${data['message']}");
+        // Làm mới danh sách đơn hàng sau khi thêm đánh giá
+        await getOrder();
+        return data['message'];
+      } else {
+        throw Exception("Failed to create review: ${data['message']}");
+      }
+    } else {
+      throw Exception("HTTP error: ${response.statusCode}");
+    }
+  } catch (e) {
+    print("Error create review: $e");
+    throw Exception("Oops, something went wrong");
+  }
+}
+
 }
