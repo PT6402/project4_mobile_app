@@ -263,13 +263,13 @@ Widget build(BuildContext context) {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      'Book Name: ${detail.bookName}',
+                                      '${detail.bookName}',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold, fontSize: 16),
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
                                     ),
-                                    Text("Id: ${detail.bookId}"),
+                                    // Text("Id: ${detail.bookId}"),
                                     SizedBox(height: 5),
                                     Text(
                                       'Price: \$${detail.price}',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:testtem/Providers/BookProvider.dart';
+import 'package:testtem/Providers/MyBookProvider.dart';
 import 'package:testtem/Providers/OrderProvider.dart';
 import 'package:testtem/Providers/WishlistProvider.dart';
 import 'package:testtem/config/routers/router_provider.dart';
@@ -20,6 +21,7 @@ void main() async {
       ChangeNotifierProvider(create: (_)=>WishListProvider(sl())),
       ChangeNotifierProvider(create: (_) => CartProvider(sl())),
       ChangeNotifierProvider(create: (_) => OrderProvider(sl())),
+        ChangeNotifierProvider(create: (_) => MyBookProvider(sl())),
     ], child: const MyApp()),
   );
 }
