@@ -1,4 +1,4 @@
-const String urlServer = "http://172.16.2.230:9090";
+const String urlServer = "http://192.168.1.11:9090";
 
 // Stripe payment
 const String stripePublishableKey = "pk_test_51PZTRYRu31VY3Rle0yQIAGG1Cz0PaFIUNN1C1kxjiFQRrzqN02xFx8qrZMx3rojYqRGOoSWPi0927XW2TdBR06YL00Ro06xPdG";

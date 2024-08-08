@@ -1,62 +1,93 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:logger/logger.dart';
+import 'package:testtem/Providers/CartProvider.dart';
 import 'package:testtem/core/constants/constant_url.dart';
 
 class StripeService {
   StripeService._();
 
+  Logger logger = Logger();
   static final StripeService instance = StripeService._();
 
-  Future<void> makePayment() async {
+  static const String apiUrlCreatePaymentIntent =
+      "$urlServer/api/v1/orders/create-payment-intent";
+
+  Future<void> makePayment(int cartId, CartProvider cartProvider) async {
     try {
-      String? paymentIntentClientSecret = await _createPaymentIntent(10, "usd");
-      if (paymentIntentClientSecret == null) return;
+      // Step 1: Get the access token from the CartProvider via StorageToken
+      final accessToken = await cartProvider.bearerToken.getAccessToken();
+
+      // Step 2: Create Payment Intent on Backend
+      Map<String, dynamic>? paymentData = await _createPaymentIntentOnBackend(cartId, accessToken!);
+      if (paymentData == null) return;
+
+      String paymentIntentClientSecret = paymentData['clientSecret'];
+      int orderId = paymentData['orderId'];
+
+      // Step 3: Initialize the Stripe Payment Sheet
       await Stripe.instance.initPaymentSheet(
-          paymentSheetParameters: SetupPaymentSheetParameters(
-              paymentIntentClientSecret: paymentIntentClientSecret,
-              merchantDisplayName: "The Book Shelf"));
-      await _processPayment();
-    }
-    catch (e) {
-      print(e);
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: paymentIntentClientSecret,
+          merchantDisplayName: "The Book Shelf",
+        ),
+      );
+
+      // Step 4: Process the payment
+      await _processPayment(cartProvider, orderId);
+    } catch (e) {
+      print('Error in makePayment: $e');
     }
   }
 
-  Future<String?> _createPaymentIntent(int amount, String currency) async {
+  Future<Map<String, dynamic>?> _createPaymentIntentOnBackend(int cartId, String accessToken) async {
     try {
       final Dio dio = Dio();
-      Map<String, dynamic> data = {
-        "amount": _calculateAmount(amount),
-        "currency": currency
-      };
-      var response = await dio.post("https://api.stripe.com/v1/payment_intents",
-          data: data,
-          options:
-              Options(contentType: Headers.formUrlEncodedContentType, headers: {
-            "Authorization": "Bearer $stripeSecretKey",
-            "Content-Type": "application/x-www-form-urlencoded"
-          }));
-      if (response.data != null) {
-        return response.data["client_secret"];
+
+      // Making a POST request to your backend to create a PaymentIntent
+      final response = await dio.post(
+        '$apiUrlCreatePaymentIntent/$cartId',
+        options: Options(
+          followRedirects: false,
+          validateStatus: (status) => true,
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      // Checking if the response is successful
+      if (response.statusCode == 200) {
+        // Return the response data containing clientSecret and orderId
+        return response.data['model'] as Map<String, dynamic>;
+      } else {
+        print('Failed to create PaymentIntent: ${response.statusCode}');
+        return null;
       }
+    } catch (e) {
+      print('Error creating PaymentIntent on backend: $e');
       return null;
-    } catch (e) {
-      print(e);
     }
-    return null;
   }
 
-  Future<void> _processPayment() async {
+  Future<void> _processPayment(CartProvider cartProvider, int orderId) async {
     try {
+      // Present payment sheet to user
       await Stripe.instance.presentPaymentSheet();
-      await Stripe.instance.confirmPaymentSheetPayment();
-    } catch (e) {
-      print(e);
-    }
-  }
 
-  String _calculateAmount(int amount) {
-    final calculatedAmount = amount * 100;
-    return calculatedAmount.toString();
+      logger.i('Payment sheet presented, checking payment status...');
+      // After successful payment, call backend to confirm payment and update order status
+      final paymentSuccess = await cartProvider.checkPayment(orderId);
+      if (paymentSuccess) {
+        cartProvider.clearCart(); // Clear the cart only if payment is successful
+        logger.i('Payment successful and cart cleared');
+      } else {
+        logger.e('Payment failed or not completed.');
+      }
+    } catch (e) {
+      logger.e('Error processing payment: $e');
+    }
   }
 }

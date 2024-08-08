@@ -1,10 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:testtem/Providers/CartProvider.dart';
-import 'package:testtem/Widgets/cart_item.dart';
 import 'package:testtem/services/stripe_service.dart';
+import '../Widgets/cart_item.dart';
 import '../DTO/CartItemShow.dart';
 
 class CartPage extends StatefulWidget {
@@ -15,25 +13,6 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  Logger logger = Logger();
-  bool _isInit = true;
-
-  _CartPageState();
-
-  PackageShowbook? _selectedPackage;
-
-  @override
-  void didChangeDependencies() {
-    if (_isInit) {
-      final cartProvider = Provider.of<CartProvider>(context);
-      cartProvider.viewCart();
-      _isInit = false;
-    }
-    super.didChangeDependencies();
-  }
-
-   // double totalPricePage = 0;
-
   double calculateTotalPrice() {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
     double totalPrice = 0.0;
@@ -42,7 +21,7 @@ class _CartPageState extends State<CartPage> {
         totalPrice += item.priceBuy;
       } else {
         final selectedPackage = item.packlist.firstWhere(
-          (pack) => pack.id == item.packId,
+              (pack) => pack.id == item.packId,
           orElse: () => PackageShowbook(
             id: 0,
             packageName: "Default",
@@ -53,14 +32,8 @@ class _CartPageState extends State<CartPage> {
         totalPrice += selectedPackage.rentPrice;
       }
     }
-   return totalPrice;
+    return totalPrice;
   }
-
-  // void handleReload(){
-  //   setState(() {
-  //
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +45,6 @@ class _CartPageState extends State<CartPage> {
       body: Consumer<CartProvider>(
         builder: (context, cartProvider, child) {
           if (cartProvider.isLoading) {
-
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -88,18 +60,6 @@ class _CartPageState extends State<CartPage> {
                   itemCount: cartProvider.cartItems.length,
                   itemBuilder: (context, index) {
                     final cartItem = cartProvider.cartItems[index];
-                    _selectedPackage = cartItem.ibuy
-                        ? null
-                        : cartItem.packlist.firstWhere(
-                            (pack) => pack.id == cartItem.packId,
-                            orElse: () => PackageShowbook(
-                              id: 0,
-                              packageName: "Default",
-                              dayQuantity: 0,
-                              rentPrice: 0.0,
-                            ),
-                          );
-
                     return CartItem(cartItem: cartItem);
                   },
                 ),
@@ -114,17 +74,17 @@ class _CartPageState extends State<CartPage> {
                       style: const TextStyle(
                           fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    // const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () {
-                        // Handle checkout logic here
-                        StripeService.instance.makePayment();
+                      onPressed: () async {
+                        final cartId = cartProvider.cartItems.isNotEmpty ? cartProvider.cartItems.first.cartId : 0;
+
+                        if (cartId > 0) {
+                          await StripeService.instance.makePayment(cartId, cartProvider);
+                        } else {
+                          print("Cart ID is not valid.");
+                        }
                       },
-                      // style: ElevatedButton.styleFrom(
-                      //   padding: const EdgeInsets.symmetric(vertical: 16),
-                      // ),
-                      child: const Text('Proceed to Checkout',
-                          style: TextStyle(fontSize: 16)),
+                      child: const Text('Proceed to Checkout', style: TextStyle(fontSize: 16)),
                     ),
                   ],
                 ),
