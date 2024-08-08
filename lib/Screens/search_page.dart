@@ -130,23 +130,23 @@ class _SearchPageState extends State<SearchPage> {
                                       }
                                     },
                                   ),
-                                  Positioned(
-                                    top: 30,
-                                    right: 5,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        var state =
-                                            BlocProvider.of<AuthBloc>(context)
-                                                .state;
-                                        if (state.user == null) {
-                                          context.pushNamed("login");
-                                        }
-                                      },
-                                      child: Icon(
-                                          Icons.favorite_border_outlined,
-                                          color: Colors.red),
-                                    ),
-                                  ),
+                                  // Positioned(
+                                  //   top: 30,
+                                  //   right: 5,
+                                  //   child: GestureDetector(
+                                  //     onTap: () {
+                                  //       var state =
+                                  //           BlocProvider.of<AuthBloc>(context)
+                                  //               .state;
+                                  //       if (state.user == null) {
+                                  //         context.pushNamed("login");
+                                  //       }
+                                  //     },
+                                  //     child: Icon(
+                                  //         Icons.favorite_border_outlined,
+                                  //         color: Colors.red),
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             );

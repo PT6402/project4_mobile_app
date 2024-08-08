@@ -1,6 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:testtem/Providers/CartProvider.dart';
+
 import 'package:testtem/services/stripe_service.dart';
 import '../Widgets/cart_item.dart';
 import '../DTO/CartItemShow.dart';
@@ -60,7 +62,22 @@ class _CartPageState extends State<CartPage> {
                   itemCount: cartProvider.cartItems.length,
                   itemBuilder: (context, index) {
                     final cartItem = cartProvider.cartItems[index];
+// <<<<<<< payment
                     return CartItem(cartItem: cartItem);
+// =======
+//                     _selectedPackage = cartItem.ibuy
+//                         ? null
+//                         : cartItem.packlist.firstWhere(
+//                             (pack) => pack.id == cartItem.packId,
+//                             orElse: () => PackageShowbook(
+//                               id: 0,
+//                               packageName: "Default",
+//                               dayQuantity: 0,
+//                               rentPrice: 0.0,
+//                             ),
+//                           );
+// return CartItem(cartItem: cartItem);
+// >>>>>>> main
                   },
                 ),
               ),
@@ -75,6 +92,7 @@ class _CartPageState extends State<CartPage> {
                           fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     ElevatedButton(
+
                       onPressed: () async {
                         final cartId = cartProvider.cartItems.isNotEmpty ? cartProvider.cartItems.first.cartId : 0;
 
@@ -83,6 +101,7 @@ class _CartPageState extends State<CartPage> {
                         } else {
                           print("Cart ID is not valid.");
                         }
+
                       },
                       child: const Text('Proceed to Checkout', style: TextStyle(fontSize: 16)),
                     ),
