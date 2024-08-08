@@ -241,9 +241,9 @@ class _BookDetailPageState extends State<BookDetailPage> {
                               SizedBox(height: 20),
                               ElevatedButton(
                                 onPressed: () async {
-                                  final cartProvider =
-                                      Provider.of<CartProvider>(context,
-                                          listen: false);
+
+                                  final cartProvider = Provider.of<CartProvider>(context, listen: false);
+
 
                                   try {
                                     await cartProvider.addToCart(
@@ -257,20 +257,22 @@ class _BookDetailPageState extends State<BookDetailPage> {
                                     // Show success message
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
-                                        content: Text(
-                                            'Book added to cart successfully!'),
+
+                                        content: Text('Book added to cart successfully!'),
+
                                       ),
                                     );
                                   } catch (e) {
                                     // Show error message if adding to cart fails
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
-                                        content: Text(
-                                            'Failed to add book to cart. Please try again.'),
+
+                                        content: Text('Failed to add book to cart. Please try again.'),
                                       ),
                                     );
                                   }
                                 },
+
                                 child: Text('Add to Cart'),
                               ),
                             ],

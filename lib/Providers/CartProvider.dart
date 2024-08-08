@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:testtem/DTO/BookDetail.dart' as bookDetail;
@@ -13,12 +14,15 @@ class CartProvider with ChangeNotifier {
   final StorageToken bearerToken;
   Logger logger = Logger();
   dynamic selectedPackage;
+
   CartProvider(this.bearerToken);
 
   final String apiUrlViewCart = "${urlServer}/api/v1/cart";
   final String apiUrlAddToCart = "${urlServer}/api/v1/cart";
   final String apiUrlRemoveFromCart = "${urlServer}/api/v1/cart";
   final String apiUrlUpdateCart = "${urlServer}/api/v1/cart";
+  final String apiUrlCreatePaymentIntent =
+      "${urlServer}/api/v1/orders/create-payment-intent";
 
   List<CartItemShow> _cartItems = [];
 
@@ -29,6 +33,7 @@ class CartProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
 
   double _totalPrice = 0.0;
+
   double get totalPrice => _totalPrice;
 
   Future<List<CartItemShow>?> viewCart() async {
@@ -66,6 +71,13 @@ class CartProvider with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  void clearCart() {
+    logger.i('Clearing the cart');
+    _cartItems = [];
+    _totalPrice = 0.0;
+    notifyListeners();
   }
 
   void calculateTotalPrice() {
@@ -143,9 +155,9 @@ class CartProvider with ChangeNotifier {
         await viewCart();
         logger.i({_cartItems[0].packId});
         return _cartItems;
-        calculateTotalPrice();// Refresh cart after update
+        calculateTotalPrice(); // Refresh cart after update
       } else {
-      return _cartItems;
+        return _cartItems;
         print('Failed to update cart: ${response.statusCode}');
       }
       notifyListeners();
@@ -181,36 +193,6 @@ class CartProvider with ChangeNotifier {
     }
   }
 
-  // Future<void> addToCart(int bookId, bool ibuy, {bookDetail.PackageShowbook? selectedPackage}) async {
-  //   try {
-  //     final accessToken = await bearerToken.getAccessToken();
-  //     final response = await http.post(
-  //       Uri.parse(apiUrlAddToCart),
-  //       headers: {
-  //         'Authorization': 'Bearer $accessToken',
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: json.encode({
-  //         'bookId': bookId,
-  //         'ibuy': ibuy,
-  //         'selectedPackage': selectedPackage != null ? {
-  //           'packageName': selectedPackage.packageName,
-  //           'dayQuantity': selectedPackage.dayQuantity,
-  //           'rentPrice': selectedPackage.rentPrice,
-  //         } : null,
-  //       }),
-  //     );
-  //
-  //     if (response.statusCode == HttpStatus.ok) {
-  //       await viewCart(); // Refresh cart after adding the item
-  //     } else {
-  //       print('Failed to add to cart: ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     print('Error adding to cart: $e');
-  //   }
-  // }
-
   Future<void> removeFromCart(int bookId) async {
     try {
       final accessToken = await bearerToken.getAccessToken();
@@ -231,4 +213,73 @@ class CartProvider with ChangeNotifier {
       print('Error removing from cart: $e');
     }
   }
+
+  Future<void> createPaymentIntentAndHandleOrder(int cartId) async {
+    final accessToken = await bearerToken.getAccessToken();
+    try {
+      final response = await http.post(
+        Uri.parse('$apiUrlCreatePaymentIntent/$cartId'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == HttpStatus.created) {
+        final data = json.decode(response.body);
+        final clientSecret = data['model']['clientSecret'];
+
+        // Initialize payment sheet
+        await Stripe.instance.initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+            paymentIntentClientSecret: clientSecret,
+            merchantDisplayName: "The Book Shelf",
+          ),
+        );
+
+        // Present payment sheet
+        await Stripe.instance.presentPaymentSheet();
+
+        // Clear cart in Flutter
+        _cartItems.clear();
+        calculateTotalPrice();
+        notifyListeners();
+      } else {
+        print('Failed to create PaymentIntent: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error creating PaymentIntent: $e');
+    }
+  }
+
+  Future<bool> checkPayment(int orderId) async {
+    final accessToken = await bearerToken.getAccessToken();
+    try {
+      logger.i('Sending payment check request for orderId: $orderId');
+      final response = await http.post(
+        Uri.parse('$urlServer/api/v1/orders/checkPaymentForFlutter'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          "orderId": orderId,
+        }),
+      );
+
+      if (response.statusCode == 200) {  // Check for a successful response
+        final data = json.decode(response.body);
+        logger.i('Payment check response: $data');
+        return data['status'] == true;
+      } else {
+        logger.e(
+            'Failed to confirm payment: ${response.statusCode} - ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      logger.e('Error confirming payment: $e');
+      return false;
+    }
+  }
+
 }
